@@ -1,0 +1,2097 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="theme-color" content="#3a2a1f">
+<title>边城以西 · 滇西十二日</title>
+<!-- Leaflet 地图库（在线加载，离线时自动回退到手绘 SVG） -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" defer integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<style>
+:root{
+  --bg:#fbf6ec;--card-bg:#fff8e8;--text:#2a1f15;--text-soft:#6b594a;
+  --accent:#c4493d;--accent-soft:#d98a45;--border:#e8d9c0;
+  --shadow:rgba(190,130,80,0.12);
+  --tag-book-bg:#fdf2cd;--tag-book-fg:#8a5b1c;
+  --tag-reserve-bg:#ffe2d3;--tag-reserve-fg:#a13a25;
+  --tag-hike-bg:#d5eedc;--tag-hike-fg:#2c5e3a;
+  --tag-buy-bg:#e0dcff;--tag-buy-fg:#4933b0;
+  --tag-stay-bg:#e3eef9;--tag-stay-fg:#2b4f7a;
+  --tag-warn-bg:#ffe7c6;--tag-warn-fg:#884c0a;
+  --map-bg:#f4ead4;--map-river:#b8d6e3;--map-land:#efe1c4;
+  --map-mountain:#d8c4a4;--map-road:#b69873;
+}
+.theme-night{
+  --bg:#0f1318;--card-bg:#1c2129;--text:#eceae1;--text-soft:#a8a59c;
+  --accent:#ff7659;--accent-soft:#f0a070;--border:#2a2f38;
+  --shadow:rgba(0,0,0,0.45);
+  --tag-book-bg:#3a2d12;--tag-book-fg:#ffd789;
+  --tag-reserve-bg:#3a1d12;--tag-reserve-fg:#ffb094;
+  --tag-hike-bg:#142b1e;--tag-hike-fg:#97cfb0;
+  --tag-buy-bg:#1a1c3a;--tag-buy-fg:#c5beff;
+  --tag-stay-bg:#14232e;--tag-stay-fg:#92b8da;
+  --tag-warn-bg:#3a2812;--tag-warn-fg:#ffc97a;
+  --map-bg:#1a1e24;--map-river:#2a3a48;--map-land:#23282f;
+  --map-mountain:#2c323a;--map-road:#4d4640;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;font-size:15px;line-height:1.55;transition:background .6s,color .6s;padding-bottom:50px}
+main.container{max-width:760px;margin:0 auto;padding:0 14px}
+h1,h2,h3{margin:0 0 12px;font-weight:600;letter-spacing:0.02em}
+h1{font-size:22px;line-height:1.3}
+h2{font-size:18px;padding:10px 0 6px;border-bottom:2px solid var(--accent);display:inline-block;margin-top:30px}
+h3{font-size:16px}
+.muted{color:var(--text-soft)}
+.t{font-variant-numeric:tabular-nums}
+.card{background:var(--card-bg);border-radius:14px;padding:16px;box-shadow:0 2px 8px var(--shadow);margin-bottom:14px;border:1px solid var(--border);transition:background .6s,border-color .6s,box-shadow .6s}
+
+#hero{background:linear-gradient(140deg,var(--accent),var(--accent-soft));color:#fff;padding:22px 18px;border-radius:22px;margin:18px 12px 18px;box-shadow:0 6px 24px var(--shadow);position:relative;overflow:hidden}
+.theme-night #hero{background:linear-gradient(140deg,#3a1822,#28141e);box-shadow:0 6px 30px rgba(0,0,0,0.55)}
+#hero .h-label{font-size:13px;opacity:0.85;letter-spacing:0.1em}
+#hero .event-title{font-size:17px;line-height:1.4;margin:8px 0 10px;font-weight:600}
+#hero .place{font-size:13px;opacity:0.88}
+#hero .after-time{font-size:12px;opacity:0.78;margin-top:6px}
+#hero .countdown{display:flex;justify-content:space-around;gap:8px;margin-top:14px}
+#hero .unit{flex:1;min-width:0;padding:8px 2px;text-align:center;background:rgba(255,255,255,0.13);border-radius:12px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+#hero .num{font-size:clamp(28px,7vw,38px);font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+#hero .u{font-size:11px;opacity:0.85;margin-top:4px;letter-spacing:0.2em}
+.theme-night #hero .unit{background:rgba(255,255,255,0.08)}
+
+.sec-title{display:flex;align-items:center;gap:8px;margin-top:30px;margin-bottom:14px}
+.sec-title .bar{width:4px;height:22px;background:var(--accent);border-radius:4px}
+.sec-title h2{border:0;margin:0;padding:0;line-height:1}
+
+.day-card{background:var(--card-bg);border-radius:16px;margin-bottom:14px;border:1px solid var(--border);overflow:hidden;box-shadow:0 2px 6px var(--shadow);transition:background .6s,border-color .6s,box-shadow .6s}
+.day-head{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;user-select:none}
+.day-num{background:var(--accent);color:#fff;padding:4px 10px;border-radius:100px;font-weight:700;font-size:12px;letter-spacing:0.06em;white-space:nowrap}
+.day-label{flex:1;min-width:0}
+.day-title{font-size:16px;font-weight:600;line-height:1.3}
+.day-meta{font-size:12px;color:var(--text-soft);margin-top:2px}
+.day-toggle{padding:4px 10px;border-radius:100px;border:1px solid var(--border);font-size:12px;color:var(--text-soft);white-space:nowrap}
+
+.day-route-bar{padding:0 16px 14px;display:none}
+.day-route-bar.open{display:block}
+.day-route-bar .mini-map{background:var(--map-bg);border-radius:12px;padding:6px;margin-bottom:10px;transition:background .6s;height:260px;overflow:hidden;position:relative}
+.day-route-bar .nav-links{display:flex;gap:8px;flex-wrap:wrap}
+.day-route-bar .nav-btn{display:inline-flex;align-items:center;gap:4px;padding:7px 12px;border-radius:100px;background:var(--accent);color:#fff;font-size:12px;text-decoration:none;line-height:1;font-weight:500}
+.day-route-bar .nav-btn.ghost{background:transparent;color:var(--accent);border:1.5px solid var(--accent)}
+.day-route-bar .nav-btn.gaode{background:#2a83ff}
+.day-route-bar .nav-btn.gaode.ghost{background:transparent;color:#2a83ff;border:1.5px solid #2a83ff}
+.day-route-bar .nav-btn .ico{font-size:14px}
+
+.timeline{padding:6px 16px 18px}
+.tl-item{display:grid;grid-template-columns:80px 1fr;gap:12px;padding:10px 0;border-top:1px dashed var(--border);align-items:start}
+.tl-item:first-child{border-top:0}
+.tl-time{font-weight:600;font-size:13px;padding-top:2px;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1.4}
+.tl-content{font-size:14px;line-height:1.55}
+.tl-content .ttl{font-weight:600;font-size:14.5px}
+.tl-content .desc{color:var(--text-soft);margin-top:2px;font-size:13px}
+.tl-tags{margin-top:6px}
+.tag{display:inline-block;padding:3px 9px;border-radius:100px;font-size:11px;margin-right:4px;margin-top:3px;font-weight:500}
+.tag-book{background:var(--tag-book-bg);color:var(--tag-book-fg)}
+.tag-reserve{background:var(--tag-reserve-bg);color:var(--tag-reserve-fg)}
+.tag-hike{background:var(--tag-hike-bg);color:var(--tag-hike-fg)}
+.tag-buy{background:var(--tag-buy-bg);color:var(--tag-buy-fg)}
+.tag-stay{background:var(--tag-stay-bg);color:var(--tag-stay-fg)}
+.tag-warn{background:var(--tag-warn-bg);color:var(--tag-warn-fg)}
+.tag-food{background:var(--tag-buy-bg);color:var(--tag-buy-fg)}
+.tag-charge{background:var(--tag-hike-bg);color:var(--tag-hike-fg)}
+.tag-shop{background:var(--tag-buy-bg);color:var(--tag-buy-fg)}
+
+.legend{background:var(--card-bg);border-radius:12px;padding:10px 14px;margin-top:8px;margin-bottom:14px;border:1px solid var(--border);display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:12px}
+.legend-row{display:flex;align-items:center;gap:5px;color:var(--text-soft)}
+.legend-line{width:18px;height:4px;border-radius:2px}
+
+.tl-detail{margin-top:7px;padding:8px 10px;background:rgba(0,0,0,0.025);border-radius:10px;border-left:3px solid var(--accent-soft);font-size:12.5px;line-height:1.55;color:var(--text-soft);transition:background .6s}
+.theme-night .tl-detail{background:rgba(255,255,255,0.04)}
+.tl-detail .dl-h{font-weight:600;color:var(--text);margin-right:4px;display:inline-flex;align-items:center;gap:3px;font-size:12.5px}
+.tl-detail ul{margin:4px 0 0;padding-left:18px;list-style:circle}
+.tl-detail li{margin:2px 0}
+.food-link{color:#2a83ff;text-decoration:none;border-bottom:1px dashed #2a83ff;padding-bottom:1px}
+.food-link:active{opacity:0.6}
+.theme-night .food-link{color:#5fa3ff;border-bottom-color:#5fa3ff}
+
+.tl-transport{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px;align-items:center}
+.tp-mode{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:100px;font-size:11px;font-weight:600;letter-spacing:.2px}
+.tp-walk{background:#e3f1e3;color:#3a7a44}
+.tp-drive{background:#fff0d8;color:#a86c1e}
+.theme-night .tp-walk{background:#26382a;color:#a8d8a8}
+.theme-night .tp-drive{background:#4a3a1c;color:#e8c890}
+.tp-time{font-size:11.5px;color:var(--text-soft);padding:2px 8px;background:rgba(0,0,0,0.04);border-radius:8px}
+.theme-night .tp-time{background:rgba(255,255,255,0.06)}
+.tp-park{font-size:11.5px;color:var(--text-soft);display:inline-flex;align-items:center;gap:2px}
+.tp-park::before{content:'🅿️';font-size:11px;opacity:.7}
+.tp-park:empty{display:none}
+
+/* 前一天/提前准备项 */
+.tl-prep{margin-top:8px;padding:8px 12px;background:linear-gradient(135deg,#fff7e6 0%,#ffeac6 100%);border:1px solid #f5c878;border-radius:10px;font-size:12.5px;line-height:1.55;color:#7a4f0c}
+.theme-night .tl-prep{background:linear-gradient(135deg,#3a2c10 0%,#4a3618 100%);border-color:#8a5e1e;color:#f0c890}
+.tl-prep-head{font-weight:700;font-size:12px;margin-bottom:4px;display:flex;align-items:center;gap:5px;color:#a86c1e}
+.theme-night .tl-prep-head{color:#f0c890}
+.tl-prep-head::before{content:'📋';font-size:14px}
+.tl-prep ul{margin:4px 0 0 18px;padding:0}
+.tl-prep li{margin:3px 0}
+
+.todo,.tip{background:var(--card-bg);border-radius:14px;padding:16px;margin-bottom:10px;border:1px solid var(--border);box-shadow:0 2px 6px var(--shadow);transition:background .6s,border-color .6s,box-shadow .6s}
+.todo ul{padding-left:22px;margin:8px 0}
+.todo li{margin:8px 0;line-height:1.55}
+.todo .time-h{font-size:13px;font-weight:600;color:var(--accent);margin-bottom:6px}
+.tip h3{font-size:14.5px;color:var(--accent);margin-bottom:8px}
+.tip p{margin:6px 0;font-size:13.5px;line-height:1.6}
+.tip ul{padding-left:22px;margin:6px 0}
+.tip li{margin:4px 0;font-size:13.5px}
+
+table.conf{width:100%;font-size:13px;border-collapse:collapse;margin-top:6px}
+table.conf th,table.conf td{text-align:left;padding:9px 4px;border-bottom:1px dashed var(--border);vertical-align:top}
+table.conf th{color:var(--text-soft);font-weight:500;font-size:12px;width:80px}
+table.conf td .h-name{font-weight:600;font-size:14px;color:var(--text)}
+table.conf td .h-sub{font-size:12px;color:var(--text-soft);margin-top:2px}
+table.conf td .h-addr{font-size:12.5px;margin-top:5px}
+
+#map-overview{background:var(--map-bg);border-radius:14px;padding:12px;border:1px solid var(--border);transition:background .6s,border-color .6s}
+.day-card .mini-map{padding:8px}
+#map-overview svg, .mini-map svg{display:block;width:100%;height:auto}
+.section-fade{animation:fadeIn .4s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+@media (max-width:380px){
+  main.container{padding:0 10px}
+  #hero{margin:14px 8px;padding:18px 14px;border-radius:18px}
+  .day-head{padding:12px 12px}
+  .tl-item{grid-template-columns:62px 1fr;gap:8px}
+  .timeline{padding:6px 12px 16px}
+  .day-card .nav-links{padding-bottom:2px}
+}
+
+/* ========== Top Nav ========== */
+#top-nav{
+  position:sticky;top:0;z-index:100;
+  background:rgba(255,248,232,0.78);
+  -webkit-backdrop-filter:saturate(180%) blur(14px);
+  backdrop-filter:saturate(180%) blur(14px);
+  border-bottom:1px solid var(--border);
+  transition:background .6s,border-color .6s;
+}
+.theme-night #top-nav{
+  background:rgba(28,33,41,0.78);
+}
+.nav-inner{
+  max-width:760px;margin:0 auto;
+  padding:8px 14px;
+  display:flex;align-items:center;gap:4px;
+  overflow-x:auto;
+  scrollbar-width:none;
+}
+.nav-inner::-webkit-scrollbar{display:none}
+.nav-title{
+  font-weight:700;font-size:14px;
+  padding:5px 10px 5px 2px;
+  border-right:1px solid var(--border);
+  margin-right:4px;
+  white-space:nowrap;
+  color:var(--text);
+  letter-spacing:0.02em;
+}
+.nav-link{
+  padding:6px 12px;border-radius:100px;
+  font-size:12.5px;color:var(--text);
+  text-decoration:none;white-space:nowrap;
+  transition:background .25s,color .25s;
+  -webkit-tap-highlight-color:transparent;
+}
+.nav-link:active,.nav-link.active{
+  background:var(--accent);color:#fff;
+}
+html{scroll-behavior:smooth;scroll-padding-top:54px}
+
+/* ===== 每日高德地图 样式 ===== */
+.day-route-bar .mini-map{height:260px}
+.day-route-bar .leaflet-container{height:100%;width:100%;background:#dfe9df;border-radius:8px;font-family:inherit}
+.day-map-label{background:rgba(255,255,255,0.92);border:1px solid #e8d9c0;border-radius:6px;padding:2px 7px;font-size:11px;color:#6b594a;box-shadow:0 1px 4px rgba(0,0,0,0.12);white-space:nowrap}
+.leaflet-popup-content-wrapper{border-radius:10px}
+.leaflet-popup-content{font-size:12.5px;line-height:1.5;margin:10px 12px}
+.theme-night .day-map-label{background:rgba(28,33,41,0.92);border-color:#2a2f38;color:#a8a59c}
+.theme-night .day-route-bar .leaflet-container{background:#1c2129}
+</style>
+</head>
+<body class="theme-day">
+
+<nav id="top-nav">
+  <div class="nav-inner">
+    <div class="nav-title">边城以西</div>
+    <a href="#overview" class="nav-link">总览</a>
+    <a href="#flights" class="nav-link">航班</a>
+    <a href="#days" class="nav-link">每日行程</a>
+    <a href="#card-prep" class="nav-link">出发前</a>
+  </div>
+</nav>
+
+<main class="container">
+
+<section id="hero" aria-live="polite">
+  <div class="h-label">此刻关注 · NEXT UP</div>
+  <div class="event-title" id="hero-event">加载中…</div>
+  <div class="place" id="hero-place">—</div>
+  <div class="after-time" id="hero-after">所有时间按 Asia/Shanghai 计算</div>
+  <div class="countdown" id="hero-countdown">
+    <div class="unit"><div class="num t" id="cd-d">--</div><div class="u">天</div></div>
+    <div class="unit"><div class="num t" id="cd-h">--</div><div class="u">时</div></div>
+    <div class="unit"><div class="num t" id="cd-m">--</div><div class="u">分</div></div>
+    <div class="unit"><div class="num t" id="cd-s">--</div><div class="u">秒</div></div>
+  </div>
+</section>
+
+<section class="card section-fade" id="overview">
+  <h1>边城以西 · 滇西十二日</h1>
+  <div class="muted">芒市 → 瑞丽 → 腾冲 → 芒市　|　3 人 · 自家电车（Tesla Model Y 长续航）　|　09-24 ~ 10-05</div>
+  <div style="margin-top:14px;font-size:12.5px">
+    <span class="tag tag-book">需提前订</span>
+    <span class="tag tag-reserve">需预约</span>
+    <span class="tag tag-hike">徒步</span>
+    <span class="tag tag-stay">住宿</span>
+    <span class="tag tag-warn">注意</span>
+    <span class="tag tag-buy">购物</span>
+    <span class="tag tag-charge">充电</span>
+  </div>
+</section>
+
+<div class="sec-title"><div class="bar"></div><h2>全程路线图</h2></div>
+<div id="map-overview"></div>
+<div class="legend" id="legend"></div>
+
+<div class="sec-title" id="confirmed"><div class="bar"></div><h2>已确认</h2></div>
+<section class="card" id="flights">
+  <h3>机票</h3>
+  <table class="conf" id="tbl-flights"></table>
+</section>
+<section class="card" id="card-hotels">
+  <h3>酒店</h3>
+  <table class="conf" id="tbl-hotels"></table>
+</section>
+<section class="card" id="card-tickets">
+  <h3>门票 / 需要提前买/订的</h3>
+  <div id="tbl-tickets" style="font-size:13.5px;line-height:1.6"></div>
+</section>
+
+<div class="sec-title" id="days"><div class="bar"></div><h2>逐日行程</h2></div>
+<section class="card section-fade" id="card-prep" style="margin-bottom:18px">
+  <h3>📦 出发前必做（D1 出发前 = 9.24）</h3>
+  <div class="muted" style="margin-bottom:8px">这一栏是 D1 出发前必须搞定的事。出发日之前的晚上做完，出发日就轻松。</div>
+  <div id="prep-list" style="font-size:13px;line-height:1.7"></div>
+</section>
+<div id="itinerary"></div>
+
+<div class="sec-title"><div class="bar"></div><h2>实用贴士</h2></div>
+<div id="tips"></div>
+
+<footer style="text-align:center;margin-top:30px;font-size:12px;color:var(--text-soft)">
+  <div>页面无追踪 · 无外部依赖 · 离线可用</div>
+  <div style="margin-top:4px">时区固定 Asia/Shanghai（UTC+8）</div>
+</footer>
+
+</main>
+
+<script>
+"use strict";
+const TZ = "Asia/Shanghai";
+
+/* ========== Helpers ========== */
+function gaodeLink(place){ // place: {name, lng, lat}
+  if(!place || !place.name) return null;
+  if(place.lng!=null && place.lat!=null){
+    return `https://uri.amap.com/marker?position=${place.lng},${place.lat}&name=${encodeURIComponent(place.name)}&src=mypage&callnative=1`;
+  }
+  return `https://uri.amap.com/search?keyword=${encodeURIComponent(place.name)}&src=mypage&callnative=1`;
+}
+function gaodeMultiLink(from, via, to){
+  // from/to: {lng,lat,name}; via: array of {lng,lat,name}
+  const fmt = p => p.lng!=null && p.lat!=null ? `${p.lng},${p.lat}` : null;
+  const f = fmt(from), t = fmt(to);
+  if(!f || !t) return null;
+  const viaStr = (via||[]).filter(p=>fmt(p)).map(p=>fmt(p)).join(";");
+  let url = `https://uri.amap.com/navigation?from=${f}&to=${t}&mode=car&src=mypage&callnative=1`;
+  if(viaStr) url += `&via=${viaStr}`;
+  if(to.name) url += `&destname=${encodeURIComponent(to.name)}`;
+  if(from.name) url += `&orgname=${encodeURIComponent(from.name)}`;
+  return url;
+}
+function fmt2(n){ return String(n).padStart(2,'0'); }
+function isoShanghai(dateStr, timeStr){
+  // dateStr: "2026-09-24", timeStr: "18:40"
+  return new Date(dateStr + "T" + timeStr + ":00+08:00");
+}
+function getNowShanghai(){
+  const now = new Date();
+  const fmt = new Intl.DateTimeFormat("en-CA",{timeZone:TZ,hour12:false,year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit"});
+  const parts = fmt.formatToParts(now);
+  const get = t => parts.find(p=>p.type===t).value;
+  let h = get("hour"); if(h==="24") h="00";
+  return new Date(`${get("year")}-${get("month")}-${get("day")}T${h}:${get("minute")}:${get("second")}+08:00`);
+}
+function diffParts(target, now){
+  const diff = Math.max(0, target.getTime() - now.getTime());
+  const secs = Math.floor(diff/1000);
+  return {
+    d: Math.floor(secs/86400),
+    h: Math.floor((secs%86400)/3600),
+    m: Math.floor((secs%3600)/60),
+    s: secs%60,
+    expired: target.getTime() <= now.getTime(),
+    labelDiff: diff
+  };
+}
+
+/* ========== Data ========== */
+const FLIGHTS = [
+  {type:"去程", date:"2026-09-24", dow:"周四", startTime:"18:40", endTime:"23:00", route:"北京大兴 → 芒市", code:"MU5718", tag:"直飞"},
+  {type:"返程", date:"2026-10-05", dow:"周一", startTime:"18:40", endTime:"22:30", route:"芒市 → 北京大兴", code:"MU9709", tag:"直飞"},
+];
+
+const HOTELS = [
+  { days:"Day 1", name:"望山民宿（芒市机场店）", city:"芒市", addr:"云南芒市风平镇风平村民委员会69号", in:"2026-09-24", out:"2026-09-25", nights:1, roomType:"安叙特惠大床房", meta:{lng:98.5314, lat:24.4050, name:"望山民宿(芒市机场店)"}},
+  { days:"Day 2", name:"瑞丽本清温泉大酒店", city:"瑞丽", addr:"云南瑞丽卯喊路北侧2号", in:"2026-09-25", out:"2026-09-26", nights:1, roomType:"私汤双床房×2", note:"3 人订 2 间（2 人一间 + 1 人单独一间）", meta:{lng:97.8514, lat:24.0030, name:"瑞丽本清温泉大酒店"}},
+  { days:"Day 3~6", name:"腾冲家静花园民宿", city:"腾冲", addr:"云南腾冲西源街道观音塘社区居民委员会翡翠小区55幢", in:"2026-09-26", out:"2026-09-30", nights:4, roomType:"二室一厅一厨二卫二阳台套房（可住 5 人）", meta:{lng:98.4936, lat:25.0205, name:"腾冲家静花园民宿"}, note:"可迟到 14:00 退房"},
+  { days:"Day 7~8", name:"芒市阑达民宿（菩提寺店）", city:"芒市", addr:"云南芒市罕相路137号附1号", in:"2026-09-30", out:"2026-10-02", nights:2, roomType:"家庭观景套房（可住 4 人）", meta:{lng:98.5645, lat:24.4380, name:"芒市阑达民宿(菩提寺店)"}},
+  { days:"Day 9~11", name:"杺轻民宿（勐焕大金塔店）", city:"芒市", addr:"云南芒市斑色路锦绣公馆7栋1号", in:"2026-10-02", out:"2026-10-05", nights:3, roomType:"三人间（最多 3 人）", meta:{lng:98.5667, lat:24.4330, name:"杺轻民宿(勐焕大金塔店)"}},
+];
+
+const PREBOOK = [
+  {when:"9.25 当天", what:"瑞丽景点（大榕树/一国两寨/国门/莫里瀑布/傣王宫）", how:"门票 + 部分景点建议提前订", tag:"订"},
+  {when:"9.27 前一天", what:"高黎贡山徒步 进山许可 + 向导", how:"已付：向导费 + 进山费", tag:"约定"},
+  {when:"9.28 当天", what:"和顺古镇门票（~55元）", how:"建议提前在线购票，国庆前段人少", tag:"订"},
+  {when:"9.28 当天", what:"热海风景区门票 + 温泉", how:"景区现场购票也行；国庆前段人流可控", tag:"订"},
+  {when:"10.1 当天", what:"勐焕大金塔门票（~40元）", how:"国庆首日必堵，强烈建议提前订", tag:"订"},
+  {when:"10.1 当天", what:"勐焕银塔门票", how:"小众现场购即可", tag:"订"},
+  {when:"10.3 当天", what:"傣族古镇非遗体验（制陶/葫芦丝）", how:"提前 1 天电话预约", tag:"约"},
+  {when:"10.2 当天", what:"孔雀湖门票", how:"现场购即可", tag:"订"},
+  {when:"全程", what:"国殇墓园 / 滇西抗战纪念馆", how:"免费但需提前预约（国庆必约）", tag:"约"},
+];
+
+const ITINERARY = [
+  {
+    id:"d1", dayLabel:"Day 1", date:"2026-09-24", dow:"周四", title:"抵达芒市", summary:"飞机落地芒市，机场附近过夜",
+    color:"#8a7053", routeGeom:null,
+    places:[{name:"芒市机场", lng:98.5314, lat:24.4050},{name:"望山民宿(芒市机场店)", lng:98.5314, lat:24.4050}],
+    events:[
+      {time:"18:40", ttl:"MU5718 北京大兴 → 芒市 起飞", desc:"提前 2.5 小时到机场取值机（建议 16:10 前）", tags:["tag-book"],
+        spots:["**大兴机场值机**：建议 16:10 前到","**飞行约 4h20m**：含晚餐时间","**机上餐食**：东航有正餐/小食"]},
+      {time:"23:00", ttl:"落地芒市机场", desc:"取行李 + 取车，自驾约 15 分钟到望山民宿", tags:["tag-stay"], place:{name:"芒市机场", lng:98.5314, lat:24.4050},
+        spots:["**机场出口**：风平镇方向出","**取车**：机场停车场（提前确认停车位置）"],
+        food:[
+          {name:"芒市机场 简餐（营业中）", lng:98.5314, lat:24.4050, desc:"若想吃口热的再睡，机场有米线/包子"}
+        ]},
+      {time:"23:30", ttl:"入住望山民宿（机场店）", desc:"芒市风平镇，过了今晚好好睡", tags:["tag-stay"], place:{name:"望山民宿(芒市机场店)", lng:98.5314, lat:24.4050},
+        spots:["**风平镇**：傣族小镇，安静"],
+        food:[
+          {name:"风平镇 夜宵摊", lng:98.5314, lat:24.4050, desc:"若还饿：傣味烧烤 / 米线（看运气开门）"}
+        ]},
+    ]
+  },
+      {
+    id:"d2", dayLabel:"Day 2", date:"2026-09-25", dow:"周五", title:"芒市 → 瑞丽", summary:"自驾 2h 抵瑞丽，途中绕莫里，入住后串独树成林+一国两寨+姐告国门，傍晚缅式洗头 + 德龙夜市",
+    color:"#3b82c4", driveMins:120,
+    places:[{name:"望山民宿(芒市机场店)", lng:98.5314, lat:24.4050},{name:"莫里瀑布(瑞丽西郊)", lng:97.7561, lat:23.9950},{name:"瑞丽活螃蟹(卯唤路)", lng:97.8514, lat:24.0030},{name:"一国两寨", lng:97.8514, lat:23.9800},{name:"独树成林(瑞丽西南)", lng:97.7800, lat:24.0100},{name:"姐告国门", lng:97.8533, lat:23.9900},{name:"傣王宫(瑞丽市区)", lng:97.8514, lat:24.0030},{name:"瑞丽本清温泉大酒店", lng:97.8514, lat:24.0030},{name:"卯唤路缅式spa一条街", lng:97.8514, lat:24.0030},{name:"德龙珠宝夜市(南卯街)", lng:97.8514, lat:24.0000}],
+    events:[
+      {time:"09:00", ttl:"望山退房 → 自驾去瑞丽", desc:"约 100km · 2h；G56 杭瑞高速，**在『瑞丽西』出口下**，不下市区直接绕莫里瀑布后再进市区", tags:["tag-charge"], place:{name:"芒市市区充电桩", lng:98.5667, lat:24.4370},
+        prep:[
+          "前一天（9.24）瑞丽本清温泉大酒店沟通 23:00 后是否能办入住（抵达已 21 点）",
+          "前一天（9.24）瑞丽景点票提前买好（一国两寨 / 姐告国门 / 莫里瀑布）",
+          "前一天（9.24）确认瑞丽一日游路线顺序"
+        ],
+        spots:["出发前检查电量和胎压","**沿途充电**：芒市服务区（杭瑞高速出芒市 5km）、龙陵服务区（中途 60km 处）","**路线**：芒市 → G56 高速 →『瑞丽西』出口 → 莫里瀑布（西 30km）→ 瑞丽市区"],
+        food:[
+          {name:"芒市傣味早餐店", lng:98.5667, lat:24.4370, desc:"出芒市前可尝稀豆粉+油粉+米线"}
+        ]},
+      {time:"11:30", ttl:"绕道莫里瀑布（顺路）", desc:"在『瑞丽西』出口下高速，向西 30km 即可到莫里；**不进市区直接进山**。**上午 vs 下午取舍**：上午去时间紧凑（11:30~14:00），但可避开正午雷雨高峰、且顺路不用回头；下午去光线出片但要专门绕 30km", tags:["tag-book","tag-warn"], place:{name:"莫里瀑布(瑞丽西郊)", lng:97.7561, lat:23.9950},
+        spots:[
+          "**为什么上午顺**：从芒市来瑞丽，『瑞丽西』出口下去正好顺路，不用回头往返 60km",
+          "**莫里瀑布落差 40m**：负氧离子爆表",
+          "**热带雨林步道**：栈道 + 野趣，约 3km",
+          "**穿防滑鞋**：山路湿滑，必带",
+          "**祈福区**：景区门口可挂祈福牌"
+        ],
+        food:[
+          {name:"莫里瀑布景区门口农家乐", desc:"山茅野菜 / 烤鸡 / 米线"}
+        ]},
+      {time:"14:00", ttl:"抵瑞丽 → 螃蟹午饭（三人桌）", desc:"市区卯唤路一带，**先去酒店办入住寄存行李再来吃**；建议 14:00~14:30 错峰", tags:["tag-food","tag-book"], place:{name:"瑞丽活螃蟹(卯唤路)", lng:97.8514, lat:24.0030},
+        spots:[
+          "**点单推荐（3 人）**：① 招牌清蒸活螃蟹 ×2 斤（壳薄肉甜）；② 缅式酸辣螃蟹 ×1 斤（开胃）；③ 螃蟹粥 ×1 锅（蟹汤煮 3 人刚好）；④ 配菜：凉拌缅式虾片 / 薄荷牛肉 / 蒜蓉空心菜；⑤ 米饭 ×3",
+          "**人均**：约 150~200 元（螃蟹 100 元/斤 + 配菜 100 元）",
+          "**中午吃 vs 晚上吃**：中午店里人少，蟹更鲜；晚上要等位 30~60min，国庆更夸张",
+          "**推荐店**：**卯唤路『瑞丽活螃蟹』**、**姐告边检站旁『缅家螃蟹王』**、**南卯街『南侨海鲜』**"
+        ],
+        food:[
+          {name:"瑞丽活螃蟹(卯唤路总店)", lng:97.8514, lat:24.0030, desc:"招牌：清蒸活螃蟹 / 缅式酸辣螃蟹 / 蟹粥"},
+          {name:"缅家螃蟹王(姐告边检站旁)", lng:97.8533, lat:23.9900, desc:"中缅结合口味，辣螃蟹为主"},
+          {name:"南侨海鲜(南卯街)", lng:97.8514, lat:24.0030, desc:"本地老牌，活蟹现挑现做"}
+        ]},
+      {time:"15:00", ttl:"回酒店提前办入住（寄存行李）", desc:"瑞丽本清温泉大酒店 · 卯唤路北侧 2 号；房间放下行李，电动车也补上电", tags:["tag-stay","tag-charge"], place:{name:"瑞丽本清温泉大酒店", lng:97.8514, lat:24.0030},
+        spots:["**提前入住理由**：可以先把重行李/换洗衣服放车上、酒店房间，下午逛完直接回房间","**私汤房**：傍晚回来就可以开始泡","**电动车**：在酒店或附近公共桩补电至 90%+（明天开长途山路 260km）"]},
+      {time:"15:30", ttl:"一国两寨（71 号界碑）", desc:"市区西南 36km · 单程 40min · 1~1.5h 游玩", tags:["tag-book"], place:{name:"一国两寨", lng:97.8514, lat:23.9800},
+        spots:[
+          "**71 号界碑**：中缅分界，可一脚跨两国（不要越界）",
+          "**寨中傣族奶奶家**：现烤糍粑、烤鱼",
+          "**银井寨 + 芒秀寨**：傣族村寨原貌，拍照好",
+          "**边境管理**：会查身份证 / 边防证，边防证现场办理"
+        ]},
+      {time:"16:30", ttl:"独树成林（一国两寨旁 10km）", desc:"挨着一国两寨 10km、15min 车程；**30min 即可拍完**", tags:["tag-stay"], place:{name:"独树成林(瑞丽西南)", lng:97.7800, lat:24.0100},
+        spots:[
+          "**位置**：瑞丽市西南约 35km，杭瑞高速旁（不在瑞丽市区）",
+          "**实景**：一棵 300+ 年古榕树，气根落地长成一片林，整片占地面积大",
+          "**为什么不能放最后**：距市区 35km，没夜场，晚上去不合算",
+          "**最佳时段**：上午或下午斜光，30min 拍完即可",
+          "**门票**：~30 元"
+        ]},
+      {time:"17:00", ttl:"姐告国门（中缅边境第一国门）", desc:"从独树成林回来顺道；30~60min", tags:["tag-book"], place:{name:"姐告国门", lng:97.8533, lat:23.9900},
+        spots:[
+          "**国门拍照**：中缅边境标志性建筑，免费",
+          "**界碑打卡**：320 国道终点",
+          "**中缅街**：缅甸籍商家卖小吃、玉器、东南亚零食",
+          "**注意**：不能带相机镜头贴近军事设施；不要跨越警戒线"
+        ],
+        food:[
+          {name:"姐告中缅街 缅籍小吃", lng:97.8533, lat:23.9900, desc:"缅甸奶茶 / 椰子冻 / 甩粑 / 缅式烧烤"}
+        ]},
+      {time:"18:30", ttl:"傣王宫（遗址+博物馆）· 落日", desc:"从姐告回瑞丽市区 30min；赶在 18:30 落日前到", tags:["tag-stay"], place:{name:"傣王宫(瑞丽市区)", lng:97.8514, lat:24.0030},
+        spots:[
+          "**傣王宫遗址**：南传佛教风格的宫殿建筑",
+          "**勐卯博物馆**：瑞丽历史/民族/边境文化",
+          "**落日光影**：傍晚黄金光最佳拍照点"
+        ]},
+      {time:"19:30", ttl:"缅式洗头（瑞丽特色体验）", desc:"市区卯唤路『缅泰式按摩一条街』；**必须提前 1 天大众点评/电话预约**，国庆当天打车来没位，约 90min", tags:["tag-book","tag-warn"], place:{name:"卯唤路缅式spa一条街", lng:97.8514, lat:24.0030},
+        spots:[
+          "**推荐店**：**卯唤路『缅泰式按摩一条街』**（多家可选）、**南卯街『金三角缅式 spa』**",
+          "**三人推荐套餐**：① 缅式洗头（含肩颈按摩，2h）：98~128 元/人；② 加 缅式足浴 30min：+ 38 元；③ 加 缅式热敷：+ 50 元",
+          "**人均**：约 130~180 元（含小费）",
+          "**预约**：国庆期间必须提前一天电话 / 大众点评预约",
+          "**注意**：认准有『缅籍技师』的店；纯中式按摩店体验不到",
+          "**结束时间**：约 21:00，出来后步行 10min 去德龙"
+        ],
+        food:[
+          {name:"缅式按摩店 缅式奶茶", desc:"按摩后店家会送一杯缅式奶茶 / 椰子水"}
+        ]},
+      {time:"21:00", ttl:"德龙珠宝夜市（步行 10min）", desc:"南卯街『德龙珠宝城』夜市，距缅式 spa 一条街步行 10min；**晚上 8:30~11:30 才最热闹**，主要卖翡翠 + 玉器 + 东南亚小吃 + 手信", tags:["tag-shop","tag-warn"], place:{name:"德龙珠宝夜市(南卯街)", lng:97.8514, lat:24.0000},
+        spots:[
+          "**位置**：南卯街『德龙珠宝城』及其周边，挨着缅式 spa 区",
+          "**主业**：翡翠毛料 + 成品玉器 + 缅甸 / 泰国工艺品",
+          "**次业**：东南亚小吃（缅甸奶茶 / 椰子冻 / 烧烤 / 芒果糯米饭）",
+          "**翡翠砍价**：成品可砍 30~50%；**认准有『国检证书』的店**，否则建议只看不买",
+          "**注意**：玉器市场水很深，**不懂别冲动**，可拍照回家鉴别；纯当逛街拍照也很出片",
+          "**推荐小吃**：缅甸烧烤 / 椰子冻 / 凉拌木瓜丝 / 傣味烧烤"
+        ],
+        food:[
+          {name:"德龙夜市 缅甸烧烤", lng:97.8514, lat:24.0000, desc:"中缅结合口味，人均 50~80"},
+          {name:"南卯街芒果糯米饭", desc:"夜市甜品，10~20 元/份"},
+          {name:"德龙 椰子冻/椰子水", desc:"现开椰子 15~20 元"}
+        ]},
+      {time:"23:00", ttl:"回瑞丽本清 · 私汤泡池 · 早睡", desc:"明天开 260km 长途山路，今晚要睡够", tags:["tag-stay"]},
+    ]
+  },
+  {
+    id:"d3", dayLabel:"Day 3", date:"2026-09-26", dow:"周六", title:"瑞丽 → 腾冲", summary:"早上开 4h 山路到腾冲，下午去博物馆+国殇墓园",
+    color:"#c4493d", driveMins:240, warn:true,
+    places:[{name:"瑞丽本清温泉大酒店", lng:97.8514, lat:24.0030},{name:"786金边境(瑞丽)", lng:97.8533, lat:23.9900},{name:"保腾高速-龙陵服务区(充电桩)", lng:98.3642, lat:24.6420},{name:"腾冲翡翠街(街子天)", lng:98.4936, lat:25.0205},{name:"腾冲博物馆", lng:98.4889, lat:25.0160},{name:"国殇墓园", lng:98.4889, lat:25.0205},{name:"和顺古镇", lng:98.4874, lat:25.0205},{name:"腾冲家静花园民宿", lng:98.4936, lat:25.0205}],
+    events:[
+      {time:"07:30", ttl:"786 金边境 · 吃早饭（中缅边境网红早餐店）", desc:"瑞丽边境的傣族+缅式早餐店；**建议 07:30 到，8:30 前吃好离开**，9 点后游客涌入会排队", tags:["tag-food","tag-warn"], place:{name:"786金边境(瑞丽)", lng:97.8533, lat:23.9900},
+        prep:[
+          "前一天（9.25）确认高黎贡山徒步向导（<b>已付向导费 + 进山费</b>，出发前一天再核实集合点）",
+          "前一天（9.25）准备徒步装备：登山杖 / 防晒衣 / 雨衣 / 充电宝 / 充足水（穿龙线 13km）"
+        ],
+        spots:[
+          "**786 金边境**：瑞丽边境网红店，融合傣味、缅式、东南亚风格",
+          "**招牌**：缅甸奶茶、甩粑、泡鲁达、酸辣米线、缅式油条",
+          "**为什么早上 7:30 来**：① 边境店上午 10 点后开始排长队；② 早 7:30 路上不堵；③ 吃完正好 8:30 出发去腾冲，时间最顺",
+          "**周边**：姐告边贸区，可顺道看一眼中缅街晨景"
+        ],
+        food:[
+          {name:"786 金边境(瑞丽)", lng:97.8533, lat:23.9900, desc:"三人推荐点单：① 缅甸奶茶 ×3（招牌必点）；② 泡鲁达 ×3（椰奶+西米+面包干）；③ 缅式油条 ×2 份（蘸豆浆）；④ 酸辣牛肉米线 ×1（开胃）；⑤ 鸡蛋甩粑 ×2 份；⑥ 合计人均约 50~70 元"}
+        ]},
+      {time:"08:30", ttl:"瑞丽本清退房 → 自驾去腾冲（途中充电）", desc:"约 260km · 3.5~4h 山路；**务必满电出发**", tags:["tag-drive","tag-charge"],
+        spots:[
+          "**路线**：杭瑞高速 G56 → 保腾高速",
+          "**全程多为高速+山路，注意车速**",
+          "**🔌 中途补电点**：**保腾高速-龙陵服务区**（约 12:30 到 / 桩位较多，建议补到 80%）",
+          "**备选补电点**：蒲缥服务区、腾冲出口服务区",
+          "**⚠ 龙陵服务区充电桩**：国家电网 e 充电、特来电为主；国庆首日可能排队 10~30min"
+        ],
+        food:[
+          {name:"龙陵服务区快餐", lng:98.3642, lat:24.6420, desc:"盒饭 / 米线 25~35 元"}
+        ]},
+      {time:"13:00", ttl:"抵达腾冲 → 家静民宿办入住（寄存行李）", desc:"翡翠小区 55 幢 · 二室一厅，可睡 3 人", tags:["tag-stay"], place:{name:"腾冲家静花园民宿", lng:98.4936, lat:25.0205}},
+      {time:"13:30", ttl:"翡翠街 · 街子天打卡 + 周边美食", desc:"**腾冲翡翠街每逢公历尾数 3/6/9/0 是街子天**（9.26 是周六，街子天集开）；可买玉石、看市集", tags:["tag-book","tag-shop"], place:{name:"腾冲翡翠街(街子天)", lng:98.4936, lat:25.0205},
+        spots:[
+          "**翡翠街**：腾冲最大的翡翠集散地，街子天（公历尾数 3/6/9/0）最热闹",
+          "**街子天集市**：临时摊位，民族服饰、山货、药材、当地小吃",
+          "**9.26 = 周六 + 街子天**：这一天翡翠街人最多、摊最齐",
+          "**买玉提醒**：腾冲买玉水深，**不懂别买贵**；小工艺品 50~200 元可买作纪念"
+        ],
+        food:[
+          {name:"腾冲必吃推荐（翡翠街周边）", lng:98.4936, lat:25.0205, desc:"① **土锅子**（腾冲版汽锅，4~6 人份，三人点一个够）—— 老店：百年老字号『马家大院』；② **铜瓢牛肉**（徽派改良，辣口）—— 推荐『山泉水铜瓢牛肉』；③ **大救驾**（炒饵块，腾冲人最家常）—— 街边小店都好吃；⑤ **稀豆粉饵丝**（早餐款，三人必点一份）—— 推荐『老店稀豆粉』；⑥ **烧肉米线** / **卷粉**"}
+        ]},
+      {time:"16:00", ttl:"国殇墓园 + 滇西抗战纪念馆（先去）", desc:"**国殇墓园 16:30 停止入园**，先去这里；周一闭馆但 9.26 是周六，开放", tags:["tag-stay","tag-warn"], place:{name:"国殇墓园", lng:98.4889, lat:25.0205},
+        spots:[
+          "**国殇墓园**：中国远征军抗日阵亡将士纪念；忠烈祠 + 烈士冢 + 纪念碑；2h，建议请讲解或扫码听",
+          "**滇西抗战纪念馆**：紧邻国殇墓园，1.5h 看实物+文献；了解松山战役、腾冲围歼战",
+          "**腾冲博物馆**：滇西历史/民族/翡翠文化，1~1.5h；翡翠展厅值得细看"
+        ]},
+      {time:"17:30", ttl:"腾冲博物馆（紧邻，步行可达）", desc:"挨着都在城南；可在国殇墓园出来后顺道走", tags:["tag-stay"], place:{name:"腾冲博物馆", lng:98.4889, lat:25.0160},
+        spots:[
+          "**翡翠展厅**：腾冲作为『翡翠之乡』的历史脉络",
+          "**滇西民族**：傣族、佤族、景颇族文化",
+          "**火山地质**：腾冲是中国四大火山群之一"
+        ]},
+      {time:"18:30", ttl:"晚餐：土锅子（腾冲必吃）", desc:"腾冲最具代表性的大菜；4~6 人份，三人点一锅刚好", tags:["tag-food","tag-book"], place:{name:"马家大院(腾冲)", lng:98.4936, lat:25.0205},
+        spots:[
+          "**土锅子**：陶锅 + 鸡汤 + 蔬菜 + 火腿，腾冲版汽锅",
+          "**推荐店**：**百年老字号『马家大院』**（文星楼附近）、**『董家大院』**、**『李家大院』**",
+          "**三人点单**：土锅子 1 锅（够 3 人）+ 薄荷牛肉 1 份 + 烤鱼 1 条 + 时蔬 2 份 + 米饭 3",
+          "**人均**：约 80~120 元",
+          "**预约**：周六晚餐高峰建议提前 1 天电话定位"
+        ]},
+      {time:"20:00", ttl:"和顺古镇 · 夜游散步", desc:"**和顺古镇夜间免费开放**；白天需买票（~55 元），晚 20:00 后免票入园", tags:["tag-rest","tag-book"], place:{name:"和顺古镇", lng:98.4874, lat:25.0205},
+        spots:[
+          "**夜游路线**：大门 → 陷河湿地 → 洗衣亭 → 双虹桥 → 和顺图书馆（夜景）",
+          "**夜景灯光**：牌坊、宗祠、桥下流水",
+          "**夜市小吃**：和顺大门口有烧烤摊，可打包宵夜",
+          "**比白天逛省门票**：晚 20:00 后不查票，9 月 26 日天黑 ~19:30，正好赶上"
+        ],
+        food:[
+          {name:"和顺古镇 寸氏私房菜", lng:98.4874, lat:25.0205, desc:"百年老字号，腾冲特色菜齐全，人均 ~80"},
+          {name:"和顺大门口 烧烤摊", desc:"烤乳扇 / 烧饵块 / 烤鱼"}
+        ]},
+    ]
+  },
+  {
+    id:"d4", dayLabel:"Day 4", date:"2026-09-27", dow:"周日", title:"高黎贡山徒步", summary:"穿龙线 13km，向导 + 进山费已付",
+    color:"#d98a45", driveMins:60,
+    places:[{name:"腾冲家静花园民宿", lng:98.4936, lat:25.0205},{name:"高黎贡山徒步进山口（向导会告知）", lng:98.4500, lat:25.0800}],
+    events:[
+      {time:"07:30", ttl:"退房前准备 / 自驾至徒步集合点", desc:"⚠ **出发前一天务必完成**：① 联系向导确认集合点 / 时间；② 微信或电话再次确认；③ 准备登山杖、充电宝、防晒、雨衣、充足水；④ 准备午餐补给", tags:["tag-drive","tag-warn"],
+        spots:[
+          "**🚨 提前一天预约 / 确认**：① 进山许可（保护区许可证）；② 向导（专业向导必备）；③ 接驳车（如集合点在山里）",
+          "**建议在前一天 20:00 前跟向导确认**：① 第二天早 8:00 集合点；② 大致下撤时间；③ 是否提供午餐；④ 是否预订向导家晚饭",
+          "**登山杖 / 充电宝 / 防晒 / 雨衣 / 充足水**：必带",
+          "**穿防滑徒步鞋**：山路湿滑"
+        ],
+        food:[
+          {name:"民宿周边早餐店", lng:98.4936, lat:25.0205, desc:"出发前吃饱，米线 / 包子"},
+          {name:"腾冲 稀豆粉店", desc:"腾冲特色早餐"}
+        ]},
+      {time:"08:30", ttl:"穿龙线 13km 徒步", desc:"向导费 + 进山费已付；带登山杖、充电宝、防晒、雨衣、充足水", tags:["tag-hike","tag-warn"],
+        spots:[
+          "**穿龙线路况**：原始森林 + 山脊小路，部分路段需手脚并用",
+          "**瀑布群**：途中多处瀑布，可补水/拍照",
+          "**海拔变化**：累计爬升 ~1000m，13km 一般 5~6h 完成",
+          "**野生动物**：可能见松鼠/鸟类，**不要喂食或接近**"
+        ]},
+      {time:"13:00", ttl:"中途午饭（向导负责 / 可预订晚餐）", desc:"强建议预订向导家晚餐，省事也好吃", tags:["tag-book"],
+        spots:["**向导家晚饭**：多在山里农家院，原生态食材，预订后向导会安排"],
+        food:[
+          {name:"向导家晚饭（已预订）", desc:"山里农家土菜"},
+          {name:"向导推荐农家", desc:"腾冲 / 界头镇 一带农家乐"}
+        ]},
+      {time:"17:00", ttl:"下撤回民宿", desc:"当晚不再安排活动，早睡", tags:["tag-rest"]},
+    ]
+  },
+  {
+    id:"d5", dayLabel:"Day 5", date:"2026-09-28", dow:"周一", title:"热海 · 绮罗 · 和顺", summary:"腾冲三个最经典，一天全跑完",
+    color:"#e5b14a",
+    places:[{name:"腾冲家静花园民宿", lng:98.4936, lat:25.0205},{name:"绮罗古镇", lng:98.5050, lat:25.0050},{name:"热海风景区", lng:98.4500, lat:24.9500},{name:"和顺古镇", lng:98.4874, lat:25.0205}],
+    events:[
+      {time:"08:00", ttl:"绮罗古镇 · 早饭 + 上午慢游", desc:"先吃腾冲特色早饭，再逛古镇；1.5~2h", tags:["tag-food","tag-stay"], place:{name:"绮罗古镇", lng:98.5050, lat:25.0050},
+        spots:[
+          "**早饭推荐**：① 稀豆粉饵丝（腾冲人最经典）；② 大救驾（炒饵块）；③ 烧肉米线",
+          "**推荐店**：**『老邵饭店』**（绮罗古镇里，土八碗 / 黄焖鸡）、**古镇门口米线店**（便宜管饱 10-15 元）",
+          "**三人早饭**：稀豆粉饵丝 3 份 + 烧肉米线 1 份 + 大救驾 1 份（尝鲜），人均 25~35 元",
+          "**文昌宫**：明清古建筑群，免费；30min 拍照",
+          "**绮罗图书馆**：与和顺图书馆齐名，30min",
+          "**田园风光**：古镇外大片油菜/稻田，10 月初秋色正好"
+        ],
+        food:[
+          {name:"绮罗古镇 老邵饭店", lng:98.5050, lat:25.0050, desc:"当地老牌，土八碗 / 黄焖鸡"},
+          {name:"古镇门口米线店", desc:"稀豆粉饵丝 / 大救驾，10~15 元"},
+          {name:"绮罗古镇 田园咖啡馆", desc:"古镇外的咖啡馆，拍照好"}
+        ]},
+      {time:"10:30", ttl:"热海风景区 · 看地热 + 泡温泉（重点）", desc:"**今日重点是泡温泉**；建议地热步道 1.5h + 泡温泉 2h", tags:["tag-book","tag-warn"], place:{name:"热海风景区", lng:98.4500, lat:24.9500},
+        spots:[
+          "**进园路线**：大门 → 大滚锅 → 蛤蟆嘴 / 狮子头 / 珍珠泉（步道 1.5h）→ 美女池温泉（户外泡）→ 浴谷温泉（可选）",
+          "**大滚锅**：必看！直径 6m 沸水锅，可买一串蛋用蒸汽蒸熟（5 元/串）",
+          "**蛤蟆嘴 / 狮子头 / 珍珠泉**：沿线步道走 1.5h，地热奇观集中区",
+          "**美女池温泉（户外）**：山腰温泉池，可泡 1~2h（带毛巾拖鞋，景区可买一次性泳衣）",
+          "**浴谷温泉**：园内高端泡池区（单收费），时间充裕可加 1h",
+          "**泡温泉建议**：① 三人共租一个小池；② 备水 / 茶 / 水果；③ 总时长不超过 2h，避免头晕",
+          "**门票**：~50 元，美女池温泉另收 ~120 元/人"
+        ],
+        food:[
+          {name:"热海景区门口 大滚锅食府", lng:98.4500, lat:24.9500, desc:"招牌：地热三宝（蒸蛋/花生/玉米）+ 温泉煮鸡"},
+          {name:"景区停车场边 农家土菜", desc:"野菜 / 腊肉 / 自酿米酒"},
+          {name:"浴谷温泉 餐厅", desc:"园内简餐，价格偏高"}
+        ]},
+      {time:"14:30", ttl:"午饭（在热海周边吃）", desc:"泡完温泉就近吃", tags:["tag-food"],
+        spots:[
+          "**推荐吃**：温泉煮鸡（热海特色）、土锅子（如果还想吃）、稀豆粉饵丝（再吃一次）",
+          "**人均**：约 60~80 元"
+        ]},
+      {time:"15:30", ttl:"和顺古镇（白天版 · 5A）", desc:"门票 ~55 元；3~4h；**国庆前段已明显人多**，建议早出门但避开正午（你安排对了，下午来）", tags:["tag-book","tag-warn"], place:{name:"和顺古镇", lng:98.4874, lat:25.0205},
+        spots:[
+          "**和顺图书馆**：全国最大的乡村图书馆，建于 1924 年；1h 细看",
+          "**寸氏宗祠 / 刘氏宗祠**：宗祠建筑群，30min",
+          "**艾思奇故居**：哲学家艾思奇老家，20min",
+          "**陷河湿地**：古镇外的湿地浮岛，可乘船；1h",
+          "**洗衣亭**：和顺标志性建筑，野鸭湖+亭子拍照最出片"
+        ],
+        food:[
+          {name:"和顺古镇 寸氏私房菜", lng:98.4874, lat:25.0205, desc:"百年老字号，腾冲特色菜齐全，人均 ~80"},
+          {name:"和顺人家", desc:"庭院餐厅，环境好；推荐 松花糕 / 大救驾"},
+          {name:"野鸭湖咖啡馆", desc:"陷河边，歇脚看景"}
+        ]},
+      {time:"19:00", ttl:"返民宿 / 晚饭可在和顺古镇内解决", desc:"晚餐可在和顺古镇内解决", tags:["tag-rest"],
+        spots:[
+          "**和顺晚饭推荐**：① 寸氏私房菜（百年老字号）；② 和顺人家（庭院餐厅，环境好）；③ 大救驾（腾冲人最家常）",
+          "**人均**：约 80~100 元"
+        ]},
+    ]
+  },
+  {
+    id:"d6", dayLabel:"Day 6", date:"2026-09-29", dow:"周二", title:"腾冲缓冲日", summary:"北海湿地 + 银杏村（9 月底金黄）",
+    color:"#7da15a",
+    places:[{name:"腾冲家静花园民宿", lng:98.4936, lat:25.0205},{name:"北海湿地", lng:98.5311, lat:25.0420},{name:"三联村(瓦猫)", lng:98.5550, lat:25.0500},{name:"江东银杏村", lng:98.5800, lat:25.0650}],
+    events:[
+      {time:"09:00", ttl:"北海湿地（湿地公园）", desc:"踩草船、看荷叶；半天", tags:["tag-book"], place:{name:"北海湿地", lng:98.5311, lat:25.0420},
+        spots:[
+          "**草排**：整片浮在水面上的草甸，可踩上去（穿凉鞋）；1h 拍照",
+          "**划草船**：当地特色水上交通，30min ~50 元",
+          "**观鸟栈道**：秋冬候鸟季可见白鹭/野鸭；1h 散步",
+          "**湿地博物馆**：室内科普，20min 可略过"
+        ],
+        food:[
+          {name:"湿地公园门口 农家鱼", lng:98.5311, lat:25.0420, desc:"腾冲北海鱼 + 烤鱼 + 时蔬"},
+          {name:"湿地码头小摊", desc:"炸小鱼 / 烤玉米 / 米线"}
+        ]},
+      {time:"13:00", ttl:"江东银杏村", desc:"9 月底 ~ 10 月初 银杏金黄，最佳时段；半天 + 拍照", tags:["tag-book","tag-warn"], place:{name:"江东银杏村", lng:98.5800, lat:25.0650},
+        spots:[
+          "**古银杏林**：村中 1000+ 棵古银杏，9/29 起开始变黄，10/初~10/中 金黄巅峰",
+          "**陈家寨**：最美核心区，屋顶落满金黄叶片，拍照必去",
+          "**江东栈道**：环村栈道，1.5h 走完",
+          "**农家院**：村民自家院子可喝茶/吃银杏果炖鸡"
+        ],
+        food:[
+          {name:"银杏村 陈家寨农家", lng:98.5800, lat:25.0650, desc:"银杏果炖土鸡 / 银杏果炒蛋 / 时蔬，人均 ~60"},
+          {name:"银杏果甜品小摊", desc:"银杏果冰粉 / 烤银杏果"},
+          {name:"村口小卖部烧烤", desc:"烤乳猪 / 烤土豆，便宜"}
+        ]},
+      {time:"15:30", ttl:"三联村 · 做土陶瓦猫（腾冲非遗）", desc:"腾冲三家村 / 三联村是云南土陶瓦猫发源地；可体验+带走（带件纪念品回家）", tags:["tag-book","tag-warn"], place:{name:"三联村(瓦猫)", lng:98.5550, lat:25.0500},
+        spots:[
+          "**瓦猫是什么**：云南民间镇宅陶兽，类似小老虎有鬃毛张嘴；腾冲是主要产地之一",
+          "**三家村 vs 三联村**：都是瓦猫村，三联村靠近北海湿地，离你们下一站银杏村也近",
+          "**体验流程**：① 看师傅示范 → ② 自己动手捏（不需经验，师傅会帮）→ ③ 上釉（可选颜色）→ ④ 烧制后 1~3 天可寄回家（运费另算）",
+          "**体验时长**：2~3h",
+          "**价格参考**：体验价 80~150 元/人；成品瓦猫烧好后 150~400 元/件",
+          "**师傅联系**：出发前 1 天打电话预约（银杏村农家乐可帮介绍）",
+          "**三人同行**：建议至少每人做一件，凑齐一套可合影"
+        ],
+        food:[
+          {name:"三联村 农家乐", lng:98.5550, lat:25.0500, desc:"土陶瓦猫村附近多家农家，可顺道吃晚饭"}
+        ]},
+      {time:"19:00", ttl:"返民宿，收拾行李（明早回芒市）", desc:"建议今晚给电车充满电", tags:["tag-rest","tag-charge"],
+        spots:[
+          "**腾冲家静民宿**最后检查：① 行李；② 充电（家静有慢充或拉线）；③ 明天 12:00~14:00 退房",
+          "**为什么今晚充**：明天上午再补一次电更稳"
+        ],
+        food:[
+          {name:"腾冲市区 菌汤锅", lng:98.4936, lat:25.0205, desc:"9~10 月云南菌子季尾声，可尝一次"},
+          {name:"腾冲夜市烧烤", desc:"卷粉 / 烧饵块 / 烤鱼"}
+        ]},
+    ]
+  },
+  {
+    id:"d7", dayLabel:"Day 7", date:"2026-09-30", dow:"周三", title:"腾冲 → 芒市", summary:"上午退房（家静可迟到 14:00），下午回芒市，看大金塔夜景",
+    color:"#7e6ec4", driveMins:180,
+    places:[{name:"腾冲家静花园民宿", lng:98.4936, lat:25.0205},{name:"保腾高速-龙陵服务区(充电桩)", lng:98.3642, lat:24.6420},{name:"芒市菩提寺", lng:98.5645, lat:24.4344},{name:"树包塔", lng:98.5675, lat:24.4380},{name:"芒市阑达民宿(菩提寺店)", lng:98.5645, lat:24.4380},{name:"勐焕大金塔", lng:98.5667, lat:24.4370}],
+    events:[
+      {time:"09:00", ttl:"腾冲家静退房前 · 吃早饭（腾冲告别饭）", desc:"**今天吃完早饭再走**；腾冲稀豆粉饵丝 + 大救驾是当地特色早饭", tags:["tag-food","tag-stay"],
+        spots:[
+          "**推荐**：① 稀豆粉饵丝（3 份）；② 大救驾（炒饵块，1 份尝鲜）；③ 烧肉米线（1 份）",
+          "**推荐店**：**『老店稀豆粉』**、**『寸氏私房菜』**（早餐也有）",
+          "**人均**：约 25~35 元"
+        ],
+        food:[
+          {name:"老店稀豆粉", lng:98.4936, lat:25.0205, desc:"腾冲最具代表性的稀豆粉店"},
+          {name:"腾冲 饵丝店", desc:"稀豆粉 / 大救驾 / 烧饵块"}
+        ]},
+      {time:"10:00", ttl:"自驾从腾冲回芒市（中途龙陵服务区充电）", desc:"约 150km · 2.5~3h；走杭瑞高速 G56", tags:["tag-drive","tag-charge"],
+        spots:[
+          "**出发前**：① 充满电（建议昨晚已充满，今天再补一次到 100%）；② 检查胎压",
+          "**🔌 中途充电点**：**保腾高速-龙陵服务区**（约 11:30 到 / 桩位较多，建议补到 80%）",
+          "**备选充电点**：蒲缥服务区、芒市出口服务区",
+          "**杭瑞高速 G56**：路况好",
+          "**芒市出口**：留意『勐焕大金塔』路标"
+        ],
+        food:[
+          {name:"龙陵服务区快餐", lng:98.3642, lat:24.6420, desc:"盒饭 / 米线 25 元"}
+        ]},
+      {time:"13:00", ttl:"抵达芒市 · 午饭（傣味告别）", desc:"**到芒市第一顿推荐尝傣味手抓饭**——这是你们今晚的告别饭", tags:["tag-food"],
+        spots:[
+          "**推荐店**：①『勐焕路傣家饭店』；②『芒究烧烤』；③『后谷咖啡庄园餐厅』",
+          "**三人点单**：① 手抓饭（2~3 人份，3 人刚好）—— 含烤鱼 / 烤鸡 / 菠萝饭 / 糯米饭；② 撒撇米线 1 份（芒市特色）；③ 时蔬 1 份；④ 果汁 3 杯",
+          "**人均**：约 60~80 元"
+        ],
+        food:[
+          {name:"芒市 傣家饭店", lng:98.5667, lat:24.4370, desc:"推荐尝傣味手抓饭"},
+          {name:"芒究烧烤", desc:"当地人爱去的烧烤店"}
+        ]},
+      {time:"15:00", ttl:"下午活动：菩提寺（慢游）+ 树包塔", desc:"**菩提寺**：南传佛教，免费；**树包塔**：被百年榕树根系包裹的塔，30min", tags:["tag-stay"], place:{name:"芒市菩提寺", lng:98.5645, lat:24.4344},
+        spots:[
+          "**菩提寺**：免费；20min；傍晚光好",
+          "**菩提寺 → 树包塔**：步行 10min，可顺道逛",
+          "**树包塔**：塔被百年榕树根系包裹，奇观；30min",
+          "**附近巷子**：傣族老街区，可顺道逛"
+        ],
+        food:[
+          {name:"菩提寺附近 傣味餐厅", lng:98.5645, lat:24.4344, desc:"晚饭可在菩提寺附近解决"}
+        ]},
+      {time:"17:30", ttl:"入住 芒市阑达民宿（菩提寺店）", desc:"罕相路 137 号附 1 号 · 家庭观景套房", tags:["tag-stay"], place:{name:"芒市阑达民宿(菩提寺店)", lng:98.5645, lat:24.4380}},
+      {time:"19:00", ttl:"勐焕大金塔 夜景", desc:"夜间灯光最出彩；建议 1~2h 拍照", tags:["tag-book"], place:{name:"勐焕大金塔", lng:98.5667, lat:24.4370},
+        spots:[
+          "**大金塔夜景**：18:30 后亮灯，金光耀眼；1.5h 拍照最佳",
+          "**大金塔广场**：傣族建筑群 + 喷泉，可看当地人跳广场舞",
+          "**步行阶梯**：登塔俯瞰芒市夜景"
+        ],
+        food:[
+          {name:"芒市夜市 烧烤/手抓饭", lng:98.5667, lat:24.4380, desc:"傣味烧烤 / 烤鱼 / 撒撇 / 米线；人均 50"},
+          {name:"勐焕路 傣家饭店", desc:"正宗傣味，推荐 菠萝饭 / 烤鱼"},
+          {name:"芒究烧烤", desc:"当地人爱去的烧烤店"}
+        ]},
+    ]
+  },
+  {
+    id:"d8", dayLabel:"Day 8", date:"2026-10-01", dow:"周四 国庆", title:"国庆首日 · 大金塔/银塔/树包塔/菩提寺", summary:"早出门避人流；国庆首日必堵",
+    color:"#3b82c4", warn:true,
+    places:[{name:"芒市阑达民宿(菩提寺店)", lng:98.5645, lat:24.4380},{name:"勐焕大金塔", lng:98.5667, lat:24.4370},{name:"勐焕银塔", lng:98.5702, lat:24.4320},{name:"树包塔", lng:98.5675, lat:24.4380},{name:"菩提寺", lng:98.5645, lat:24.4344}],
+    events:[
+      {time:"09:00", ttl:"勐焕大金塔（白天版）", desc:"早去避人流；门票 ~40 元；**国庆首日强烈建议提前订**", tags:["tag-book","tag-warn"], place:{name:"勐焕大金塔", lng:98.5667, lat:24.4370},
+        prep:[
+          "前一天（9.30）买好大金塔 / 银塔票（国庆首日必堵，早 9 点前到能避开人流）",
+          "前一天（9.30）国殇墓园 / 滇西抗战纪念馆免费预约（节假日紧张）",
+          "前一天（9.30）预想芒市夜市晚饭地点"
+        ],
+        spots:[
+          "**主塔**：中国第一金佛塔，高 76m；可登塔俯瞰芒市",
+          "**塔基大殿**：南传佛教供奉，30min",
+          "**塔周转经筒**：沿塔一周，1.5h 走完",
+          "**拍照点**：塔东侧阶梯，仰拍最壮观"
+        ],
+        food:[
+          {name:"金塔门口 傣味餐厅", lng:98.5667, lat:24.4370, desc:"中午就近解决，菠萝饭 / 烤鱼"},
+          {name:"芒市市区 撒撇米线", desc:"芒市特色早点，苦撒 / 油撒"}
+        ]},
+      {time:"11:30", ttl:"勐焕银塔", desc:"与大金塔隔路相望，规模略小", tags:["tag-book"], place:{name:"勐焕银塔", lng:98.5702, lat:24.4320},
+        spots:[
+          "**银塔**：白色风格，与金塔相互呼应；30min",
+          "**银塔旁步道**：高处看金塔银塔同框，拍照绝佳"
+        ],
+        food:[
+          {name:"银塔停车场小吃", desc:"米线 / 凉粉 / 烤乳扇"}
+        ]},
+      {time:"14:00", ttl:"树包塔", desc:"小众古迹 · 1h 足够", tags:["tag-stay"], place:{name:"树包塔", lng:98.5675, lat:24.4380},
+        spots:[
+          "**树包塔**：塔被百年榕树根系包裹，奇观；30min",
+          "**附近巷子**：傣族老街区，可顺道逛"
+        ],
+        food:[
+          {name:"树包塔巷子 老牌傣味", lng:98.5675, lat:24.4380, desc:"藏在巷子里的老店，味正价实"},
+          {name:"巷口米线店", desc:"米线 / 凉鸡米线 8~15 元"}
+        ]},
+      {time:"16:00", ttl:"菩提寺", desc:"傍晚光好；可顺便看日落", tags:["tag-stay"], place:{name:"菩提寺", lng:98.5645, lat:24.4344},
+        spots:[
+          "**主殿**：南传佛教寺庙，免费；20min",
+          "**大殿佛塔**：可绕塔祈福",
+          "**黄昏光影**：16:30 后光线最柔，拍照最佳"
+        ],
+        food:[
+          {name:"菩提寺附近 傣味餐厅", lng:98.5645, lat:24.4344, desc:"晚饭可在菩提寺附近解决"},
+          {name:"勐焕路 烧烤店", desc:"芒市夜市烤鱼/烤鸡/烤茄子"}
+        ]},
+      {time:"19:00", ttl:"芒市夜市 / 傣味手抓饭", desc:"国殇不该吃太晚，备好肠胃药", tags:["tag-food"], place:{name:"芒市夜市", lng:98.5667, lat:24.4380},
+        spots:["**勐焕夜市**：芒市最大夜市，烧烤/手抓饭/凉粉/果汁应有尽有","**手抓饭**：傣族特色宴席，2~3 人份够 3 人吃"],
+        food:[
+          {name:"芒市夜市 手抓饭摊", lng:98.5667, lat:24.4380, desc:"傣族手抓饭，特色烤鱼 / 烤鸡 / 菠萝饭，人均 50"},
+          {name:"芒究烧烤", desc:"当地人聚集的烧烤店"},
+          {name:"芒市 撒撇店", desc:"苦撒 / 油撒 配米线"}
+        ]},
+    ]
+  },
+  {
+    id:"d9", dayLabel:"Day 9", date:"2026-10-02", dow:"周五 国庆", title:"孔雀湖 + 换酒店", summary:"上午孔雀湖，中午换到杺轻（大金塔店）",
+    color:"#c4493d",
+    places:[{name:"芒市阑达民宿(菩提寺店)", lng:98.5645, lat:24.4380},{name:"孔雀湖", lng:98.6000, lat:24.5000},{name:"杺轻民宿(勐焕大金塔店)", lng:98.5667, lat:24.4330}],
+    events:[
+      {time:"09:00", ttl:"孔雀湖（孔雀谷）", desc:"芒市东郊 · 自驾约 30min · 半天", tags:["tag-book"], place:{name:"孔雀湖", lng:98.6000, lat:24.5000},
+        spots:[
+          "**孔雀谷**：景区核心，孔雀放飞表演（11:00/15:00 各一场）",
+          "**孔雀湖**：环湖 1h，可拍照",
+          "**佛塔/藤桥**：景区内多座南传佛教风格建筑",
+          "**9~10月**：雨季刚过，瀑布水量足"
+        ],
+        food:[
+          {name:"孔雀湖景区门口 农家", lng:98.6000, lat:24.5000, desc:"傣味烤鱼 / 时蔬"},
+          {name:"景区停车场小摊", desc:"凉粉 / 米线 / 烤乳扇"}
+        ]},
+      {time:"12:00", ttl:"退房芒市阑达 → 入住杺轻民宿（大金塔店）", desc:"同在芒市市区，车程约 15 分钟；体验一个房型", tags:["tag-stay"], place:{name:"杺轻民宿(勐焕大金塔店)", lng:98.5667, lat:24.4330},
+        spots:["**杺轻民宿**：自带茶座 + 智能马桶；窗景看大金塔","**斑色路一带**：芒市老街，可漫步"],
+        food:[
+          {name:"杺轻民宿周边 傣味", lng:98.5667, lat:24.4330, desc:"民宿步行范围内多家傣味餐厅"},
+          {name:"勐焕路 米线店", desc:"过桥米线 / 稀豆粉"}
+        ]},
+      {time:"15:00", ttl:"午休 / 大金塔附近走走", desc:"民宿自带茶座 + 智能马桶，下午茶", tags:["tag-rest"],
+        spots:["**大金塔下午慢游**：下午光线柔和，拍照好看","**步行金塔步道**"],
+        food:[
+          {name:"杺轻民宿 茶点", lng:98.5667, lat:24.4330, desc:"民宿自带下午茶套餐"},
+          {name:"勐焕路 咖啡馆", desc:"芒市少见的好咖啡馆"}
+        ]},
+    ]
+  },
+  {
+    id:"d10", dayLabel:"Day 10", date:"2026-10-03", dow:"周六 国庆", title:"芒市后半段", summary:"建议：后谷咖啡庄园 + 傣族古镇非遗 + 风平傣寨",
+    color:"#7e6ec4",
+    places:[{name:"杺轻民宿(勐焕大金塔店)", lng:98.5667, lat:24.4330},{name:"后谷咖啡庄园", lng:98.4428, lat:24.3856},{name:"傣族古镇非遗街区", lng:98.5670, lat:24.4320},{name:"风平傣族村寨", lng:98.4900, lat:24.4050},{name:"芒市夜市", lng:98.5667, lat:24.4380}],
+    events:[
+      {time:"09:30", ttl:"后谷咖啡庄园 · 采摘 + 烘焙体验", desc:"**云南最大咖啡基地之一** · 10 月咖啡豆成熟季 · 自驾 40min", tags:["tag-book","tag-drive"], place:{name:"后谷咖啡庄园", lng:98.4428, lat:24.3856},
+        spots:[
+          "**咖啡采摘**：进咖啡园采红果，1h 体验；10 月正值成熟季",
+          "**烘焙工坊**：看咖啡豆烘焙，可自己操作小批量",
+          "**品鉴课**：云南小粒咖啡 vs 进口豆对比，3 杯/人",
+          "**庄园露台**：山间露台看咖啡园全貌，拍照好"
+        ],
+        food:[
+          {name:"后谷咖啡庄园 露台餐厅", lng:98.4428, lat:24.3856, desc:"庄园简餐 + 咖啡，人均 ~60"},
+          {name:"庄园咖啡馆", desc:"手冲咖啡 + 糕点"}
+        ]},
+      {time:"14:00", ttl:"傣族古镇 · 非遗手工体验", desc:"**国家级非遗集中地** · 重点体验 慢轮制陶 + 葫芦丝", tags:["tag-book"], place:{name:"傣族古镇非遗街区", lng:98.5670, lat:24.4320},
+        spots:[
+          "**慢轮制陶体验**（国家级非遗）：傣族传统手工，1h 体验 + 可带走；每人 80~120 元",
+          "**葫芦丝制作**：傣族乐器手工，现场制作一支带走；约 60~100 元",
+          "**傣族剪纸 / 织锦**：免费参观，可购小件纪念品",
+          "**贝叶经拓印**：南传佛教文化体验"
+        ],
+        food:[
+          {name:"傣族古镇 赶摆街 傣味", lng:98.5670, lat:24.4320, desc:"傣味手抓饭 / 米线 / 烤鱼，人均 50"},
+          {name:"古镇 咖啡馆", desc:"歇脚 + 看非遗师傅现场演示"}
+        ]},
+      {time:"16:30", ttl:"风平傣族村寨 · 织锦/银饰手作", desc:"**傣族原生态村寨** · 避开景区人潮 · 自驾 20min", tags:["tag-drive","tag-stay"], place:{name:"风平傣族村寨", lng:98.4900, lat:24.4050},
+        spots:[
+          "**傣族织锦**：村寨妇女现场织布，可订制围巾/桌布；100~300 元",
+          "**银饰手作**：傣族银饰加工，可打制手镯/吊坠；按克计价",
+          "**干栏式建筑**：傣族传统竹楼，免费参观"
+        ],
+        food:[
+          {name:"风平村 农家乐", lng:98.4900, lat:24.4050, desc:"傣味烤鱼 / 时蔬 / 酸笋，人均 40"},
+          {name:"风平 撒撇店", desc:"苦撒 / 油撒"}
+        ]},
+      {time:"19:00", ttl:"芒市夜市 / 烧烤 / 手抓饭", desc:"推荐勐焕夜市街 / 芒究烧烤", tags:["tag-food","tag-book"], place:{name:"芒市夜市", lng:98.5667, lat:24.4380},
+        spots:["**国庆夜市氛围**：第二晚国庆，节庆氛围最浓","**手抓饭+烤鱼**：傣味经典组合"],
+        food:[
+          {name:"勐焕夜市 手抓饭", lng:98.5667, lat:24.4380, desc:"2~3 人份手抓饭，烤鱼+烤鸡+菠萝饭+糯米饭，人均 60"},
+          {name:"芒究烧烤", desc:"当地人聚集的烧烤店"},
+          {name:"芒市 撒撇店", desc:"苦撒米线 / 油撒米线"},
+          {name:"勐焕路 烧烤店", desc:"烤鱼 / 烤茄子 / 烤五花"}
+        ]},
+    ]
+  },
+  {
+    id:"d11", dayLabel:"Day 11", date:"2026-10-04", dow:"周日 国庆", title:"购物日", summary:"丙午街 / 勐焕街道采购手信",
+    color:"#5fb6a1",
+    places:[{name:"杺轻民宿(勐焕大金塔店)", lng:98.5667, lat:24.4330},{name:"芒市丙午街 / 勐焕街道", lng:98.5667, lat:24.4350}],
+    events:[
+      {time:"09:00", ttl:"丙午街 / 勐焕街道（购物）", desc:"傣族手工艺品、缅甸玉器、普洱茶、热带水果", tags:["tag-shop","tag-warn"],
+        spots:[
+          "**遮放贡米**：云南知名大米，10~20 元/斤，可带回家",
+          "**后山普洱**：云南普洱茶饼，认准大厂（勐海/下关），100~500 元/饼",
+          "**傣族织锦**：傣族特色手织布，可做围巾/桌布，50~200 元",
+          "**缅甸玉器**：瑞丽/芒市是玉石集散地，**价格水深，不懂别买贵**；建议只买小件",
+          "**热带水果**：芒果/火龙果/菠萝蜜，比北方便宜一半",
+          "**傣药/草药**：当地人爱买的傣药膏/红花油"
+        ],
+        food:[
+          {name:"丙午街 米线/卷粉", lng:98.5667, lat:24.4350, desc:"老牌早餐店，稀豆粉+油条"},
+          {name:"勐焕街道 傣味餐厅", desc:"午饭在购物地附近解决"}
+        ]},
+      {time:"12:00", ttl:"午饭 + 收拾行李", desc:"明早返程", tags:["tag-rest"],
+        spots:["**行李打包**：明天早 12 点退房","**电车最后一次充满**：市区快充"],
+        food:[
+          {name:"芒市傣味餐厅 告别宴", lng:98.5667, lat:24.4370, desc:"推荐一顿『手抓饭』做告别"},
+          {name:"芒市撒撇店", desc:"苦撒配米线"}
+        ]},
+      {time:"15:00", ttl:"退房前快充", desc:"市区快充；App：国电 e 充电 / 特来电 / 星星充电（三选二装上即可）", tags:["tag-charge","tag-warn"],
+        spots:["**市区快充**：充到 90% 即可返京，留余量应对突发"],
+        food:[
+          {name:"芒市市区 咖啡馆", desc:"最后一顿下午茶"}
+        ]},
+    ]
+  },
+  {
+    id:"d12", dayLabel:"Day 12", date:"2026-10-05", dow:"周一 国庆", title:"芒市 → 北京", summary:"12:00 前退房，傍晚飞机",
+    color:"#8a7053", routeGeom:null,
+    places:[{name:"杺轻民宿(勐焕大金塔店)", lng:98.5667, lat:24.4330},{name:"大金塔", lng:98.5667, lat:24.4370},{name:"仙佛寺", lng:98.6400, lat:24.4500},{name:"芒市机场", lng:98.5314, lat:24.4050}],
+    events:[
+      {time:"08:00", ttl:"杺轻退房 → 行李寄存酒店 / 车里", desc:"12:00 正式退房；先把行李寄存在酒店或车里，轻装出门", tags:["tag-stay"],
+        prep:[
+          "前一天（10.4）Model Y 充满电（市区快充站，建议三选一 App）",
+          "前一天（10.4）高速 ETC 余额检查 + 确认 MU9709 起飞时间未变",
+          "前一天（10.4）行李打包：特产（普洱小饼 / 鲜花饼 / 傣族织锦）单独打包托运"
+        ],
+        spots:["**杺轻民宿**：12:00 退房，行李可寄存在前台","**轻装出门**：下午还能回酒店附近吃午饭"],
+        food:[
+          {name:"杺轻周边 早餐", lng:98.5667, lat:24.4330, desc:"民宿附近稀豆粉 / 米线，吃完出门"}
+        ]},
+      {time:"09:00", ttl:"仙佛寺 · 唐代南传佛教石窟", desc:"**自驾 30min · 芒市东郊 · 免费** · 唐宋摩崖石刻 + 石窟佛像 + 山林清幽", tags:["tag-drive","tag-stay"], place:{name:"仙佛寺", lng:98.6400, lat:24.4500},
+        spots:[
+          "**唐代摩崖石刻**：佛像刻于山崖，1500+ 年历史",
+          "**石窟群**：南传佛教石窟，30min 细看",
+          "**山林徒步**：石窟周围山林，可短走 30min",
+          "**免门票**：免费开放",
+          "**拍照点**：石窟 + 山林背景，10 月光线最好"
+        ],
+        food:[
+          {name:"仙佛寺山下 农家", lng:98.6400, lat:24.4500, desc:"傣味简餐 / 酸笋鱼"},
+          {name:"回芒市市区 午饭", lng:98.5667, lat:24.4370, desc:"推荐 11:30 前回到市区午饭"}
+        ]},
+      {time:"11:30", ttl:"大金塔（白天版 · 告别）", desc:"上午最后看一眼大金塔，阳光最好；30min~1h", tags:["tag-book"], place:{name:"勐焕大金塔", lng:98.5667, lat:24.4370},
+        spots:[
+          "**主塔**：登塔俯瞰芒市",
+          "**早晨光影**：上午阳光斜射，拍照最清楚",
+          "**最后一次**：告别大金塔"
+        ],
+        food:[
+          {name:"金塔门口 傣味餐厅", lng:98.5667, lat:24.4370, desc:"就在酒店附近，午饭方便"}
+        ]},
+      {time:"12:30", ttl:"退房 + 午饭（告别宴）", desc:"**告别宴推荐**：手抓饭 / 撒撇米线 / 烤鱼", tags:["tag-food","tag-rest"],
+        spots:[
+          "**三人告别宴点单**：① 手抓饭 1 份（3 人份）；② 撒撇米线 1 份（芒市特色）；③ 烤鱼 1 条；④ 菠萝饭 1 份；⑤ 时蔬 1 份；⑥ 果汁 3 杯",
+          "**人均**：约 80~120 元",
+          "**推荐店**：**『勐焕路傣家饭店』**、**『芒市傣味餐厅』**、**『芒究烧烤』**"
+        ],
+        food:[
+          {name:"芒市傣味餐厅 告别宴", lng:98.5667, lat:24.4370, desc:"推荐一顿『手抓饭』做告别"},
+          {name:"芒市撒撇店", desc:"苦撒配米线"}
+        ]},
+      {time:"14:00", ttl:"下午活动：市区闲逛 + 遗漏手信 + 退房前快充", desc:"返京前最后一次扫货和补电；时间别太长，15:30 前必须启程去机场", tags:["tag-shop","tag-charge","tag-warn"],
+        spots:[
+          "**遗漏手信**：鲜花饼 / 小普洱茶饼 / 傣族织锦 / 热带水果（芒果干 / 火龙果干）",
+          "**退房前快充**：在市区快充站补到 90% 即可",
+          "**市区闲逛地点**：① 斑色路（芒市老街）；② 勐焕街道；③ 傣族古镇（非遗 + 步行街）"
+        ],
+        food:[
+          {name:"芒市市区 咖啡馆", desc:"最后一杯咖啡 / 打包上飞机"}
+        ]},
+      {time:"15:30", ttl:"自驾去芒市机场", desc:"芒市机场距市区约 20~30min；**预留值机 / 安检 / 行李时间**", tags:["tag-drive","tag-warn"],
+        spots:[
+          "**机场高速**：芒市机场高速通畅",
+          "**15:30 出发 → 16:00 到机场**：留 2h 给值机、安检、走路",
+          "**国殇不该吃太晚**，备好肠胃药"
+        ]},
+      {time:"16:00", ttl:"建议此时到机场（起飞前 2h）", desc:"最迟 17:00 到；预留安检 / 行李 / 走路时间", tags:["tag-warn"],
+        spots:["**值机 / 安检**：MU9709 提前 1.5h 开放值机","**机场餐饮**：芒市机场不大，仅 2~3 家简餐，价格偏贵"],
+        food:[
+          {name:"芒市机场 简餐", lng:98.5314, lat:24.4050, desc:"机场内过桥米线 / 包子，价格 30~50 元"},
+          {name:"机场便利店", desc:"可买云南特产（鲜花饼 / 普洱小饼）"}
+        ]},
+      {time:"18:40", ttl:"MU9709 芒市 → 北京大兴 起飞", desc:"返程 · 直飞", tags:["tag-stay"]},
+      {time:"22:30", ttl:"抵达北京大兴", desc:"祝大家一路顺风", tags:["tag-rest"]},
+    ]
+  },
+];
+
+/* ========== Transport & Backup 数据表 ========== */
+// key 格式：d<dayIndex>-<eventIndex>，索引从 0 开始
+// transport: {mode:'walk'|'drive', time, parking} — 显示在事件标题下方
+// backup: [{name, desc}] — 显示在「不满意就去这」区域
+const TRANSPORT_DATA = {
+  "d1-1": {
+    "mode": "drive",
+    "time": "15min",
+    "parking": "机场停车场（出发前确认位置）"
+  },
+  "d1-2": {
+    "mode": "drive",
+    "time": "5min",
+    "parking": "民宿停车场"
+  },
+  "d2-0": {
+    "mode": "drive",
+    "time": "100km · 2h",
+    "parking": "芒市服务区充电 / 路边停车"
+  },
+  "d2-1": {
+    "mode": "drive",
+    "time": "30min（瑞丽西出口下）",
+    "parking": "景区门口免费停车"
+  },
+  "d2-2": {
+    "mode": "drive",
+    "time": "30min（莫里→市区）",
+    "parking": "卯唤路路边免费"
+  },
+  "d2-3": {
+    "mode": "drive",
+    "time": "5min",
+    "parking": "酒店停车场"
+  },
+  "d2-4": {
+    "mode": "drive",
+    "time": "40min",
+    "parking": "景区停车场 ¥10"
+  },
+  "d2-5": {
+    "mode": "drive",
+    "time": "15min（挨着一国两寨）",
+    "parking": "景区门口免费"
+  },
+  "d2-6": {
+    "mode": "drive",
+    "time": "30min（独树→姐告）",
+    "parking": "国门停车场免费"
+  },
+  "d2-7": {
+    "mode": "drive",
+    "time": "30min（姐告→市区）",
+    "parking": "路边免费停车"
+  },
+  "d2-8": {
+    "mode": "walk",
+    "time": "10~15min",
+    "parking": "街边停车 ¥5/h"
+  },
+  "d2-9": {
+    "mode": "walk",
+    "time": "10min（从 spa）",
+    "parking": "德龙停车场 ¥5"
+  },
+  "d2-10": {
+    "mode": "walk",
+    "time": "10min",
+    "parking": "酒店停车场"
+  },
+  "d3-0": {
+    "mode": "drive",
+    "time": "10min",
+    "parking": "姐告路边免费"
+  },
+  "d3-1": {
+    "mode": "drive",
+    "time": "260km · 3.5~4h",
+    "parking": "龙陵服务区充电桩"
+  },
+  "d3-2": {
+    "mode": "drive",
+    "time": "抵达即停",
+    "parking": "民宿停车场"
+  },
+  "d3-3": {
+    "mode": "drive",
+    "time": "10min",
+    "parking": "翡翠街停车场 ¥10"
+  },
+  "d3-4": {
+    "mode": "drive",
+    "time": "10min",
+    "parking": "园内免费停车"
+  },
+  "d3-5": {
+    "mode": "walk",
+    "time": "5min（紧邻国殇墓园）",
+    "parking": "博物馆停车场"
+  },
+  "d3-6": {
+    "mode": "drive",
+    "time": "10min",
+    "parking": "餐厅停车位"
+  },
+  "d3-7": {
+    "mode": "drive",
+    "time": "15min",
+    "parking": "和顺大门停车场 ¥15"
+  },
+  "d4-0": {
+    "mode": "drive",
+    "time": "1h",
+    "parking": "徒步进山口停车"
+  },
+  "d4-1": {
+    "mode": "walk",
+    "time": "13km · 5~6h",
+    "parking": "—"
+  },
+  "d4-2": {
+    "mode": "walk",
+    "time": "向导家",
+    "parking": "—"
+  },
+  "d4-3": {
+    "mode": "drive",
+    "time": "1h",
+    "parking": "民宿停车场"
+  },
+  "d5-0": {
+    "mode": "drive",
+    "time": "10min",
+    "parking": "古镇门口免费停车"
+  },
+  "d5-1": {
+    "mode": "drive",
+    "time": "30min",
+    "parking": "热海停车场 ¥20"
+  },
+  "d5-2": {
+    "mode": "drive",
+    "time": "5min",
+    "parking": "餐厅停车位"
+  },
+  "d5-3": {
+    "mode": "drive",
+    "time": "30min",
+    "parking": "和顺大门停车场 ¥15"
+  },
+  "d5-4": {
+    "mode": "drive",
+    "time": "15min",
+    "parking": "民宿停车场"
+  },
+  "d6-0": {
+    "mode": "drive",
+    "time": "20min",
+    "parking": "湿地停车场 ¥10"
+  },
+  "d6-1": {
+    "mode": "drive",
+    "time": "40min",
+    "parking": "银杏村村内免费"
+  },
+  "d6-2": {
+    "mode": "drive",
+    "time": "15min",
+    "parking": "村内免费停车"
+  },
+  "d6-3": {
+    "mode": "drive",
+    "time": "30min",
+    "parking": "民宿停车场"
+  },
+  "d7-0": {
+    "mode": "walk",
+    "time": "10min",
+    "parking": "路边停车"
+  },
+  "d7-1": {
+    "mode": "drive",
+    "time": "150km · 2.5~3h",
+    "parking": "龙陵服务区充电桩"
+  },
+  "d7-2": {
+    "mode": "drive",
+    "time": "10min",
+    "parking": "餐厅停车位"
+  },
+  "d7-3": {
+    "mode": "drive",
+    "time": "10min",
+    "parking": "路边免费停车"
+  },
+  "d7-4": {
+    "mode": "walk",
+    "time": "5min（菩提寺旁）",
+    "parking": "民宿停车场"
+  },
+  "d7-5": {
+    "mode": "walk",
+    "time": "10min",
+    "parking": "塔下免费停车"
+  },
+  "d8-0": {
+    "mode": "walk",
+    "time": "5min（从酒店）",
+    "parking": "塔下停车场"
+  },
+  "d8-1": {
+    "mode": "walk",
+    "time": "15min",
+    "parking": "塔下免费停车"
+  },
+  "d8-2": {
+    "mode": "walk",
+    "time": "10min",
+    "parking": "巷口免费停车"
+  },
+  "d8-3": {
+    "mode": "walk",
+    "time": "5min",
+    "parking": "寺庙旁免费停车"
+  },
+  "d8-4": {
+    "mode": "walk",
+    "time": "15min",
+    "parking": "夜市周边收费停车"
+  },
+  "d9-0": {
+    "mode": "drive",
+    "time": "30min",
+    "parking": "景区停车场 ¥10"
+  },
+  "d9-1": {
+    "mode": "drive",
+    "time": "15min",
+    "parking": "民宿停车场"
+  },
+  "d9-2": {
+    "mode": "walk",
+    "time": "5min（从民宿）",
+    "parking": "金塔步道"
+  },
+  "d10-0": {
+    "mode": "drive",
+    "time": "40min",
+    "parking": "庄园内免费停车"
+  },
+  "d10-1": {
+    "mode": "drive",
+    "time": "10min",
+    "parking": "古镇停车场 ¥5"
+  },
+  "d10-2": {
+    "mode": "drive",
+    "time": "20min",
+    "parking": "村内免费停车"
+  },
+  "d10-3": {
+    "mode": "drive",
+    "time": "15min",
+    "parking": "夜市周边 ¥5/h"
+  },
+  "d11-0": {
+    "mode": "walk",
+    "time": "10min",
+    "parking": "路边停车"
+  },
+  "d11-1": {
+    "mode": "walk",
+    "time": "5min",
+    "parking": "—"
+  },
+  "d11-2": {
+    "mode": "drive",
+    "time": "10min",
+    "parking": "快充站"
+  },
+  "d12-1": {
+    "mode": "drive",
+    "time": "30min",
+    "parking": "山下免费停车"
+  },
+  "d12-2": {
+    "mode": "walk",
+    "time": "5min（从民宿）",
+    "parking": "塔下停车场"
+  },
+  "d12-3": {
+    "mode": "walk",
+    "time": "5min",
+    "parking": "—"
+  },
+  "d12-4": {
+    "mode": "drive",
+    "time": "10min",
+    "parking": "快充站"
+  },
+  "d12-5": {
+    "mode": "drive",
+    "time": "30min",
+    "parking": "机场停车场"
+  }
+};
+
+const BACKUP_DATA = {
+  "d1-1": [
+    {
+      "name": "机场候机厅休息",
+      "desc": "若航班延误，就在机场休息"
+    }
+  ],
+  "d2-0": [
+    {
+      "name": "直接走高速到瑞丽",
+      "desc": "不下莫里瀑布，省 30km，13:30 到瑞丽吃午饭"
+    }
+  ],
+  "d2-1": [
+    {
+      "name": "畹町边关文化园",
+      "desc": "自驾 1h · 滇缅公路 + 畹町桥，边境历史感"
+    },
+    {
+      "name": "淘宝场（玉石早市）",
+      "desc": "早起的话可去，10:00 后散场"
+    }
+  ],
+  "d2-2": [
+    {
+      "name": "南卯街 撒撇店",
+      "desc": "苦撒米线 / 缅式凉拌"
+    }
+  ],
+  "d2-4": [
+    {
+      "name": "畹町桥（边境打卡）",
+      "desc": "自驾 50min · 中缅边境第一桥，30min"
+    }
+  ],
+  "d2-5": [
+    {
+      "name": "一国两寨（重游）",
+      "desc": "如果第一次没逛够，再进一次"
+    }
+  ],
+  "d2-6": [
+    {
+      "name": "中缅街早市",
+      "desc": "8:00~10:00 热闹，下午 17:00 后人就少了"
+    }
+  ],
+  "d2-7": [
+    {
+      "name": "勐卯博物馆",
+      "desc": "免门票 · 瑞丽历史 + 民族 + 边境文化"
+    }
+  ],
+  "d2-8": [
+    {
+      "name": "卯唤路茶馆",
+      "desc": "缅式奶茶 + 鸡脚，氛围更轻松"
+    }
+  ],
+  "d2-9": [
+    {
+      "name": "南卯街夜市",
+      "desc": "小吃 + 玉器，比德龙更接地气"
+    }
+  ],
+  "d3-0": [
+    {
+      "name": "南卯街米线老店",
+      "desc": "稀豆粉 + 烧饵块，本地早"
+    }
+  ],
+  "d3-3": [
+    {
+      "name": "腾冲玉雕园",
+      "desc": "翡翠加工坊，可看玉雕师傅现场打磨"
+    }
+  ],
+  "d3-4": [
+    {
+      "name": "松山战役遗址",
+      "desc": "自驾 1.5h · 抗战历史现场，半天"
+    }
+  ],
+  "d3-5": [
+    {
+      "name": "高黎贡山自然公园（轻量版）",
+      "desc": "不开车，可看自然博物馆 + 步道"
+    }
+  ],
+  "d3-6": [
+    {
+      "name": "铜瓢牛肉",
+      "desc": "腾冲名菜 · 徽派改良辣口"
+    }
+  ],
+  "d3-7": [
+    {
+      "name": "绮罗古镇夜游",
+      "desc": "比和顺安静，可看古镇夜景"
+    }
+  ],
+  "d4-1": [
+    {
+      "name": "火山公园（小坡）",
+      "desc": "不开长途，腾冲城边火山地质 + 热气球"
+    }
+  ],
+  "d5-0": [
+    {
+      "name": "绮罗田园咖啡馆",
+      "desc": "古镇外田园咖啡，看油菜/稻田"
+    }
+  ],
+  "d5-1": [
+    {
+      "name": "界头花海（10月初有花）",
+      "desc": "自驾 1.5h · 高黎贡山下花海"
+    }
+  ],
+  "d5-3": [
+    {
+      "name": "北海湿地 + 划草船",
+      "desc": "湿地公园划草船，特色水上交通"
+    }
+  ],
+  "d6-0": [
+    {
+      "name": "柱状节理（火山地质）",
+      "desc": "腾冲四大奇观之一 · 自驾 30min"
+    }
+  ],
+  "d6-1": [
+    {
+      "name": "黑鱼河 + 柱状节理",
+      "desc": "火山地质 + 河谷风光串联"
+    }
+  ],
+  "d6-2": [
+    {
+      "name": "高黎贡手工造纸博物馆",
+      "desc": "抄纸体验 · 国家级非遗"
+    }
+  ],
+  "d7-3": [
+    {
+      "name": "五棵树寺",
+      "desc": "步行 15min · 南传佛教，免费"
+    }
+  ],
+  "d7-5": [
+    {
+      "name": "银塔夜景",
+      "desc": "与大金塔相望，规模略小但人少"
+    }
+  ],
+  "d8-0": [
+    {
+      "name": "仙佛寺（自驾 30min）",
+      "desc": "唐代南传佛教石窟，免门票"
+    }
+  ],
+  "d8-1": [
+    {
+      "name": "五棵树寺",
+      "desc": "步行 15min · 安静寺庙"
+    }
+  ],
+  "d8-2": [
+    {
+      "name": "菩提寺",
+      "desc": "步行 5min · 傍晚光好"
+    }
+  ],
+  "d8-3": [
+    {
+      "name": "傣族古镇非遗街区",
+      "desc": "步行 20min · 慢轮制陶体验"
+    }
+  ],
+  "d8-4": [
+    {
+      "name": "勐焕傣族古镇夜市",
+      "desc": "傣族歌舞表演 + 烧烤"
+    }
+  ],
+  "d9-0": [
+    {
+      "name": "仙佛寺",
+      "desc": "自驾 30min · 唐代石窟 + 山林"
+    }
+  ],
+  "d9-2": [
+    {
+      "name": "勐焕傣族古镇",
+      "desc": "自驾 10min · 慢轮制陶 + 葫芦丝"
+    }
+  ],
+  "d10-0": [
+    {
+      "name": "仙佛寺",
+      "desc": "自驾 30min · 唐代石窟，免费"
+    },
+    {
+      "name": "芒市生态田园",
+      "desc": "自驾 15min · 莲花池 / 稻田"
+    }
+  ],
+  "d10-1": [
+    {
+      "name": "风平傣族村寨",
+      "desc": "自驾 20min · 织锦/银饰手作"
+    },
+    {
+      "name": "勐焕傣族古镇",
+      "desc": "自驾 10min · 综合非遗"
+    }
+  ],
+  "d10-2": [
+    {
+      "name": "傣族古镇非遗街区",
+      "desc": "自驾 20min · 慢轮制陶"
+    }
+  ],
+  "d10-3": [
+    {
+      "name": "勐焕傣族古镇夜市",
+      "desc": "夜市 + 傣族歌舞"
+    }
+  ],
+  "d11-0": [
+    {
+      "name": "勐焕傣族古镇",
+      "desc": "自驾 10min · 手工艺品"
+    }
+  ],
+  "d12-1": [
+    {
+      "name": "傣族古镇非遗（步行 20min）",
+      "desc": "慢轮制陶 / 葫芦丝，1.5h 体验"
+    }
+  ],
+  "d12-2": [
+    {
+      "name": "银塔",
+      "desc": "步行 15min · 规模略小但人少"
+    }
+  ]
+};
+
+
+/* ========== Build: Overview ========== */
+function buildOverviewSVG(){
+  const c = window.getComputedStyle(document.documentElement);
+  const mountain = c.getPropertyValue("--map-mountain").trim() || "#d8c4a4";
+  const river = c.getPropertyValue("--map-river").trim() || "#b8d6e3";
+  const road = c.getPropertyValue("--map-road").trim() || "#b69873";
+  const accent = c.getPropertyValue("--accent").trim() || "#c4493d";
+  const text = c.getPropertyValue("--text").trim() || "#2a1f15";
+  const soft = c.getPropertyValue("--text-soft").trim() || "#6b594a";
+  return `
+<svg viewBox="0 0 800 540" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="hatch" patternUnits="userSpaceOnUse" width="8" height="8" patternTransform="rotate(45)">
+      <line x1="0" y1="0" x2="0" y2="8" stroke="${road}" stroke-width="0.8" opacity="0.25"/>
+    </pattern>
+  </defs>
+
+  <!-- mountains (silhouettes) -->
+  <g opacity="0.45">
+    <path d="M0,180 Q120,140 240,170 T480,150 T800,180 L800,400 L0,400 Z" fill="${mountain}"/>
+    <path d="M0,240 Q140,200 260,240 T520,220 T800,240 L800,400 L0,400 Z" fill="${mountain}" opacity="0.7"/>
+  </g>
+
+  <!-- rivers -->
+  <path d="M60,90 Q200,300 380,360 T720,420" stroke="${river}" stroke-width="3" fill="none" opacity="0.65"/>
+  <path d="M80,140 Q260,310 440,355 T740,395" stroke="${river}" stroke-width="2" fill="none" opacity="0.45"/>
+
+  <!-- G56 杭瑞高速 -->
+  <path d="M180,420 Q280,400 360,395 T520,320 T660,260" stroke="${road}" stroke-width="2.2" stroke-dasharray="7,5" fill="none" opacity="0.7"/>
+
+  <!-- Route lines -->
+  <!-- Day 2: Mangshi -> Ruili (blue) -->
+  <path d="M430,380 Q320,395 220,420" stroke="#3b82c4" stroke-width="3.5" fill="none" opacity="0.9"/>
+  <polygon points="220,420 234,412 232,428" fill="#3b82c4"/>
+  <text x="320" y="378" text-anchor="middle" font-size="11" fill="${soft}">Day 2 · 芒市 → 瑞丽 · 2h</text>
+
+  <!-- Day 3: Ruili -> Tengchong (red) -->
+  <path d="M220,420 Q330,300 460,260 Q560,235 640,200" stroke="#c4493d" stroke-width="3.5" fill="none" opacity="0.9"/>
+  <polygon points="640,200 626,202 633,212" fill="#c4493d"/>
+  <text x="440" y="246" text-anchor="middle" font-size="11" fill="${soft}">Day 3 · 瑞丽 → 腾冲 · 4h 山路</text>
+
+  <!-- Day 7: Tengchong -> Mangshi (purple) -->
+  <path d="M640,200 Q530,290 430,380" stroke="#7e6ec4" stroke-width="3.5" fill="none" opacity="0.9"/>
+  <polygon points="430,380 423,367 437,371" fill="#7e6ec4"/>
+  <text x="560" y="306" text-anchor="middle" font-size="11" fill="${soft}">Day 7 · 腾冲 → 芒市 · 3h</text>
+
+  <!-- Local loops (decorative arcs) -->
+  <path d="M620,180 Q670,200 660,260 T640,290" stroke="#e5b14a" stroke-width="2.8" fill="none" opacity="0.6" stroke-dasharray="3,3"/>
+  <text x="690" y="178" text-anchor="middle" font-size="10" fill="${soft}">Day 4–6 腾冲活动</text>
+
+  <path d="M410,365 Q480,395 530,385 T580,360" stroke="#5fb6a1" stroke-width="2.8" fill="none" opacity="0.6" stroke-dasharray="3,3"/>
+  <text x="500" y="415" text-anchor="middle" font-size="10" fill="${soft}">Day 8–11 芒市活动</text>
+
+  <!-- Cities -->
+  <g transform="translate(640,200)">
+    <circle r="11" fill="${accent}" stroke="white" stroke-width="3"/>
+    <text y="-18" text-anchor="middle" font-size="14" font-weight="700" fill="${text}">腾冲</text>
+    <text y="28" text-anchor="middle" font-size="10" fill="${soft}">D3–D6 住</text>
+  </g>
+  <g transform="translate(220,420)">
+    <circle r="9" fill="${accent}" stroke="white" stroke-width="3"/>
+    <text y="-16" text-anchor="middle" font-size="13" font-weight="700" fill="${text}">瑞丽</text>
+    <text y="26" text-anchor="middle" font-size="10" fill="${soft}">D2 住</text>
+  </g>
+  <g transform="translate(430,380)">
+    <circle r="13" fill="${accent}" stroke="white" stroke-width="3"/>
+    <text y="-20" text-anchor="middle" font-size="15" font-weight="700" fill="${text}">芒市</text>
+    <text y="32" text-anchor="middle" font-size="10" fill="${soft}">D1 · D7-D11 住</text>
+  </g>
+  <g transform="translate(530,300)">
+    <circle r="4" fill="${soft}"/>
+    <text y="-9" text-anchor="middle" font-size="10" fill="${soft}">龙陵</text>
+  </g>
+
+  <!-- Airport -->
+  <g transform="translate(670,330)">
+    <text x="0" y="0" font-size="18" fill="${text}">✈</text>
+    <text x="-3" y="14" text-anchor="middle" font-size="10" fill="${soft}">Mangshi LUM</text>
+  </g>
+
+  <text x="400" y="514" text-anchor="middle" font-size="10" fill="${soft}">滇西简化图 · 非精准比例 · 装饰性</text>
+</svg>`;
+}
+
+function buildLegend(){
+  return [
+    {color:"#3b82c4", text:"Day 2 芒市 → 瑞丽"},
+    {color:"#c4493d", text:"Day 3 瑞丽 → 腾冲（山路 4h）"},
+    {color:"#7e6ec4", text:"Day 7 腾冲 → 芒市"},
+    {color:"#e5b14a", text:"Day 4–6 腾冲活动"},
+    {color:"#5fb6a1", text:"Day 8–11 芒市活动"},
+  ].map(l => `<div class="legend-row"><span class="legend-line" style="background:${l.color}"></span>${l.text}</div>`).join("");
+}
+
+/* ========== Build: Confirmed ========== */
+function buildFlights(){
+  const rows = FLIGHTS.map(f => `
+    <tr>
+      <th>${f.type}</th>
+      <td>
+        <div class="h-name">${f.code} · ${f.route}</div>
+        <div class="h-sub">${f.date} · ${f.dow} · ${f.startTime} → ${f.endTime}（Asia/Shanghai）</div>
+        <div class="h-sub">${f.tag} · 4h 直飞</div>
+      </td>
+    </tr>`).join("");
+  document.getElementById("tbl-flights").innerHTML = rows;
+}
+
+function buildHotels(){
+  const rows = HOTELS.map(h => {
+    const navUrl = gaodeLink(h.meta);
+    return `
+    <tr>
+      <th>${h.days} 住</th>
+      <td>
+        <div class="h-name">${h.name}</div>
+        <div class="h-sub">${h.nights}晚 · ${h.in.replace(/-/g,'.')} 入住 → ${h.out.replace(/-/g,'.')} 退房 · ${h.roomType}</div>
+        <div class="h-addr">📍 ${h.addr}</div>
+        ${h.note ? `<div class="h-sub" style="color:var(--accent-soft);margin-top:4px">⚠ ${h.note}</div>` : ""}
+        ${navUrl ? `<a class="nav-btn gaode" href="${navUrl}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:100px;background:#2a83ff;color:#fff;font-size:11px;text-decoration:none;margin-top:6px">🗺 高德导航</a>` : ""}
+      </td>
+    </tr>`;
+  }).join("");
+  document.getElementById("tbl-hotels").innerHTML = rows;
+}
+
+function buildTickets(){
+  const tagColors = {订:"tag-reserve", 约:"tag-book"};
+  const html = PREBOOK.map(p => {
+    return `<div style="margin:8px 0"><span class="tag ${tagColors[p.tag]||'tag-book'}">${p.tag}</span> <b style="color:var(--text)">${p.when}</b> · ${p.what}<div class="muted" style="font-size:12.5px;margin-top:2px">${p.how}</div></div>`;
+  }).join("");
+  document.getElementById("tbl-tickets").innerHTML = html || "<div class='muted'>暂无</div>";
+}
+
+/* ========== Build: Daily ========== */
+function buildMiniMapSVG(day){
+  const c = window.getComputedStyle(document.documentElement);
+  const bg = c.getPropertyValue("--map-bg").trim() || "#f4ead4";
+  const text = c.getPropertyValue("--text").trim() || "#2a1f15";
+  const soft = c.getPropertyValue("--text-soft").trim() || "#6b594a";
+  const accent = c.getPropertyValue("--accent").trim() || "#c4493d";
+
+  const places = day.places || [];
+  const lngs = places.map(p=>p.lng);
+  const lats = places.map(p=>p.lat);
+  if(places.length===0) return "";
+  const minLng = Math.min(...lngs)-0.05, maxLng = Math.max(...lngs)+0.05;
+  const minLat = Math.min(...lats)-0.05, maxLat = Math.max(...lats)+0.05;
+  const span = Math.max(maxLng-minLng, maxLat-minLat);
+  const padX = 60, padY = 50;
+  const W = 360, H = 200;
+  const project = p => {
+    const x = padX + (p.lng - minLng) / span * (W - padX*1.6);
+    const y = padY + (maxLat - p.lat) / span * (H - padY*1.5);
+    return {x, y};
+  };
+
+  const pts = places.map(p => ({...project(p), name:p.name}));
+  let path = "";
+  for(let i=0;i<pts.length-1;i++){
+    const a = pts[i], b = pts[i+1];
+    path += `M${a.x},${a.y} L${b.x},${b.y} `;
+  }
+  const dots = pts.map((p,i) => `<g><circle cx="${p.x}" cy="${p.y}" r="${i===0||i===pts.length-1?7:4}" fill="${i===0?'#5fb6a1':(i===pts.length-1?accent:soft)}" stroke="${bg}" stroke-width="2.5"/><text x="${p.x}" y="${p.y-12}" text-anchor="middle" font-size="9" fill="${text}">${i+1}</text></g>`).join("");
+
+  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+    <rect width="${W}" height="${H}" fill="${bg}" rx="6"/>
+    ${path ? `<path d="${path}" stroke="${day.color||accent}" stroke-width="2.5" fill="none" opacity="0.85" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4,3"/>` : ""}
+    ${dots}
+  </svg>`;
+}
+
+function initDayMaps(){
+  if(typeof L === 'undefined') return; // Leaflet 未加载（离线）→ 保留原 SVG fallback
+  ITINERARY.forEach(function(day){
+    const el = document.getElementById('daymap-' + day.id);
+    if(!el) return;
+    const places = day.places || [];
+    if(places.length === 0) return;
+    el.innerHTML = ''; // 清掉 SVG fallback
+    const map = L.map(el, { scrollWheelZoom:false, attributionControl:false, zoomControl:true }).setView([places[0].lat, places[0].lng], 11);
+    window.__daymaps = window.__daymaps || {};
+    window.__daymaps[day.id] = map;
+    L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}', {
+      subdomains:['1','2','3','4'], maxZoom:18, attribution:'高德地图'
+    }).addTo(map);
+    const latlngs = places.map(function(p){ return [p.lat, p.lng]; });
+    if(places.length >= 2){
+      L.polyline(latlngs, { color: day.color || '#c4493d', weight:3.5, opacity:0.85, dashArray:'7,5' }).addTo(map);
+    }
+    places.forEach(function(p, i){
+      const label = (i+1) + ' · ' + p.name;
+      const m = L.marker([p.lat, p.lng]).addTo(map);
+      m.bindTooltip(label, { permanent: places.length<=6, direction:'top', offset:[0,-12], className:'day-map-label' });
+      m.bindPopup('<b>' + label + '</b>' + (p.desc ? '<br>' + p.desc : ''));
+    });
+    if(places.length >= 2){
+      map.fitBounds(L.latLngBounds(latlngs), { padding:[30,30] });
+    }
+  });
+}
+
+function buildItinerary(){
+  const root = document.getElementById("itinerary");
+  root.innerHTML = ITINERARY.map(day => {
+    const placeLinks = (day.events || []).map(e => {
+      if(!e.place || !e.place.name) return null;
+      return gaodeLink(e.place);
+    }).filter(Boolean);
+    const navMulti = (() => {
+      const ps = (day.places || []);
+      if(ps.length < 2) return null;
+      return gaodeMultiLink(ps[0], ps.slice(1, -1), ps[ps.length-1]);
+    })();
+
+    const eventsHTML = day.events.map((e, idx) => {
+      // 从数据表注入 transport / backup（如果事件本身没定义）
+      const tkey = day.id + '-' + idx;
+      if(!e.transport && TRANSPORT_DATA[tkey]) e.transport = TRANSPORT_DATA[tkey];
+      if(!e.backup && BACKUP_DATA[tkey]) e.backup = BACKUP_DATA[tkey];
+
+      const link = e.place ? gaodeLink(e.place) : null;
+      const tags = (e.tags || []).map(t => `<span class="tag ${t}">${tagLabel(t)}</span>`).join("");
+      const prepHTML = (e.prep && e.prep.length) ? `
+        <div class="tl-prep">
+          <div class="tl-prep-head">前一天 / 提前准备</div>
+          <ul>${e.prep.map(p => `<li>${p}</li>`).join("")}</ul>
+        </div>` : "";
+      const spotsHTML = (e.spots && e.spots.length) ? `
+        <div class="tl-detail">
+          <div class="dl-h">🎯 看点</div>
+          <ul>${e.spots.map(s => `<li>${s}</li>`).join("")}</ul>
+        </div>` : "";
+      const foodHTML = (e.food && e.food.length) ? `
+        <div class="tl-detail">
+          <div class="dl-h">🍜 附近吃</div>
+          <ul>${e.food.map(f => {
+            const fl = gaodeLink(f);
+            const name = fl ? `<a class="food-link" href="${fl}" target="_blank" rel="noopener">${f.name}</a>` : f.name;
+            return `<li>${name}${f.desc ? ` <span class="muted" style="font-size:11.5px">· ${f.desc}</span>` : ""}</li>`;
+          }).join("")}</ul>
+        </div>` : "";
+      const transportHTML = e.transport ? `
+        <div class="tl-transport">
+          <span class="tp-mode tp-${e.transport.mode==='walk'?'walk':'drive'}">${e.transport.mode==='walk'?'🚶 步行':'🚗 自驾'}</span>
+          <span class="tp-time">${e.transport.time || ''}</span>
+          ${e.transport.parking ? `<span class="tp-park">${e.transport.parking}</span>` : ''}
+        </div>` : "";
+      const backupHTML = (e.backup && e.backup.length) ? `
+        <div class="tl-detail">
+          <div class="dl-h">🔀 不满意就去这</div>
+          <ul>${e.backup.map(b => `<li><b>${b.name}</b>${b.desc ? ` <span class="muted" style="font-size:11.5px">· ${b.desc}</span>` : ''}</li>`).join("")}</ul>
+        </div>` : "";
+      return `
+        <div class="tl-item">
+          <div class="tl-time">${e.time}</div>
+          <div class="tl-content">
+            <div class="ttl">${e.ttl}</div>
+            ${e.desc ? `<div class="desc">${e.desc}</div>` : ""}
+            ${prepHTML}
+            ${transportHTML}
+            ${spotsHTML}
+            ${foodHTML}
+            ${backupHTML}
+            ${tags ? `<div class="tl-tags">${tags}</div>` : ""}
+            ${link ? `<a class="nav-btn gaode" href="${link}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:100px;background:#2a83ff;color:#fff;font-size:11.5px;text-decoration:none;margin-top:6px">🗺 高德到这</a>` : ""}
+          </div>
+        </div>`;
+    }).join("");
+
+    const dayColorBadge = `<div class="day-num" style="background:${day.color}">${day.dayLabel}</div>`;
+
+    const navHTML = `
+      <div class="nav-links">
+        ${day.places && day.places.length>0 ? `<a class="nav-btn gaode" href="https://uri.amap.com/search?keyword=${encodeURIComponent(day.title)}&src=mypage&callnative=1" target="_blank" rel="noopener">🗺 高德搜「${day.title}」</a>` : ""}
+        ${navMulti ? `<a class="nav-btn gaode ghost" href="${navMulti}" target="_blank" rel="noopener">🛣 全天多点导航</a>` : ""}
+        ${day.warn ? `<a class="nav-btn ghost" style="border-color:#d94a2f;color:#d94a2f" href="#tips">⚠ 风险提示</a>` : ""}
+      </div>`;
+
+    return `
+    <div class="day-card" data-id="${day.id}">
+      <div class="day-head" onclick="toggleDay('${day.id}')">
+        ${dayColorBadge}
+        <div class="day-label">
+          <div class="day-title">${day.title}</div>
+          <div class="day-meta">${day.date.replace(/-/g,'.')} · ${day.dow} · ${day.summary}</div>
+        </div>
+        <div class="day-toggle" id="tg-${day.id}">收起 ▴</div>
+      </div>
+      <div class="day-route-bar open" id="route-${day.id}">
+        <div class="mini-map" id="daymap-${day.id}">${buildMiniMapSVG(day)}</div>
+        ${navHTML}
+      </div>
+      <div class="timeline">${eventsHTML}</div>
+    </div>`;
+  }).join("");
+}
+
+function tagLabel(t){
+  return { "tag-book":"需提前订", "tag-reserve":"需预约", "tag-hike":"徒步", "tag-stay":"住宿", "tag-warn":"⚠ 注意", "tag-food":"美食用", "tag-charge":"充电", "tag-shop":"购物", "tag-rest":"休整", "tag-drive":"自驾" }[t] || t;
+}
+
+function toggleDay(id){
+  const el = document.getElementById("route-" + id);
+  const tg = document.getElementById("tg-" + id);
+  const open = el.classList.toggle("open");
+  if(tg) tg.textContent = open ? "收起 ▴" : "展开 ▾";
+  if(open && window.__daymaps && window.__daymaps[id]){
+    setTimeout(function(){ window.__daymaps[id].invalidateSize(); }, 60);
+  }
+}
+
+/* ========== 出发前必做 ========== */
+const PREP = [
+  {group:"⚡ 充电 & 电车", items:[
+    "装好三个充电 App：<b>国家电网 e 充电</b> / <b>特来电</b> / <b>星星充电</b>（建议都装）",
+    "<b>Model Y 充满电</b> + 检查胎压（冷胎 2.9~3.1 bar）+ 备胎工具检查",
+    "准备<b>便携式应急充电枪</b>（以防民宿不能拉线慢充）",
+    "充电卡 / ETC 准备好，余额充足"
+  ]},
+  {group:"📱 离线 & 凭证", items:[
+    "所有酒店入住凭证<b>截图</b>，离线存到相册（避免山上信号差）",
+    "航班电子登机牌<b>截图</b>（MU5718 / MU9709）",
+    "把 3 人身份证 + 航班号存在群相册",
+    "高德离线地图下载：<b>德宏州 / 保山市 / 腾冲市</b>"
+  ]},
+  {group:"📄 证件 & 应急", items:[
+    "驾照 / 身份证 / 充电卡 随身包",
+    "现金 + 微信 / 支付宝都备（部分村寨只收现金）",
+    "常用药：肠胃药 / 感冒 / 创可贴 / 防晒霜"
+  ]},
+  {group:"🚗 出发前晚（9.23）", items:[
+    "Tesla App 检查胎压 + 充电状态",
+    "行李：登山杖 / 防晒衣 / 雨衣 / 充电宝 / 充足水（为 D4 高黎贡徒步）",
+    "水果 / 零食：路上吃的（瑞丽→腾冲 4h 山路）",
+    "第二天闹钟：<b>9.24 早起 16:00 出发去机场</b>"
+  ]}
+];
+function buildPrep(){
+  const root = document.getElementById("prep-list");
+  root.innerHTML = PREP.map(g => `
+    <div style="margin-bottom:14px;padding:10px 12px;background:rgba(255,247,230,0.6);border-radius:10px;border-left:3px solid #f5c878">
+      <div style="font-weight:600;font-size:13px;margin-bottom:5px;color:var(--accent)">${g.group}</div>
+      <ul style="margin:0;padding-left:20px;line-height:1.7">${g.items.map(t => `<li style="margin:3px 0">${t}</li>`).join("")}</ul>
+    </div>
+  `).join("");
+}
+
+/* ========== TIPS ========== */
+const TIPS = [
+  {title:"🔌 电车充电（全程最重要）", body:`
+    <p>滇西三城市 Tesla 官方超充基本没有，全程依赖第三方桩。</p>
+    <ul>
+      <li><b>出发前装好</b>三个 App 之一即可（建议都装）：<b>国家电网 e 充电</b> / <b>特来电</b> / <b>星星充电</b></li>
+      <li><b>三段长距离路段</b>（务必满电出发）：
+        <ul>
+          <li>芒市 → 瑞丽：~100km（无忧）</li>
+          <li>瑞丽 → 腾冲：<b>~260km 山路</b>（最难的段，中途建议补电）</li>
+          <li>腾冲 → 芒市：~150km（无忧）</li>
+        </ul>
+      </li>
+      <li><b>补电点</b>：瑞丽/腾冲/芒市市区均有快充；G56 高速沿途服务区有部分桩，但国庆必排队，<b>市区充优先</b></li>
+      <li><b>民宿充电</b>：多半不能拉线慢充，问下酒店前台；建议带 <b>便携式充电枪</b></li>
+    </ul>`},
+  {title:"🌤 天气 / 穿着", body:`
+    <p>9 月底 ~10 月初 滇西早晚凉，白天紫外线强，山区温差大。</p>
+    <ul>
+      <li>白天短袖 + 防晒衣 / 长袖</li>
+      <li>早晚加件外套（腾冲山区可能 10~15°C）</li>
+      <li>运动鞋 / 徒步鞋（高黎贡山 13km 必须）</li>
+      <li>雨伞 / 一次性雨衣（徒步用）</li>
+      <li>防晒霜 / 帽子 / 墨镜</li>
+    </ul>`},
+  {title:"🏔 高黎贡山徒步（9.27）", body:`
+    <p>穿龙线 13km，徒步强度<b>中高</b>。</p>
+    <ul>
+      <li>已付：向导费 + 进山费（具体金额行程表已记录）</li>
+      <li><b>必带</b>：登山杖、充电宝、防晒霜、雨衣（10~20L）、充足饮水（至少 1.5L/人）、能量棒</li>
+      <li><b>建议</b>：运动袜、护膝、头灯（以防下撤晚了）</li>
+      <li><b>建议晚上预订向导晚餐</b>，第二天不用再折腾吃</li>
+    </ul>`},
+  {title:"🇨🇳 国庆高峰（10.1–10.7）", body:`
+    <ul>
+      <li>大金塔 / 银塔 / 和顺 → 全部<b>必提前购票</b>；<b>非遗体验</b>（慢轮制陶/葫芦丝）建议提前 1 天电话预约</li>
+      <li>国殇墓园 / 滇西抗战纪念馆 → 免费但<b>必须预约</b></li>
+      <li>服务区充电桩 / 高速 → <b>必堵</b>，出发时间尽量早于 8:00</li>
+      <li>餐厅 → 提前预定中午 12 点前晚餐</li>
+      <li>景区内厕所 → 旺季排队严重</li>
+    </ul>`},
+  {title:"🌺 芒市还可参加的活动（行程外）", body:`
+    <p>如果 Day 8~12 哪天有空闲或想换换口味，可以考虑：</p>
+    <ul>
+      <li><b>傣族歌舞 / 泼水广场</b>：勐焕路傣族文化广场，节庆常有表演；可向民宿老板问最近场次</li>
+      <li><b>孔雀谷放飞</b>（Day 9 孔雀湖景区内）：11:00 / 15:00 各一场，免费观看</li>
+      <li><b>芒市生态田园</b>：芒市南郊，自驾 15min；夏天赏莲，10 月看稻田</li>
+      <li><b>非遗体验</b>：慢轮制陶（傣族古镇）/ 葫芦丝制作 / 织锦（风平傣寨）/ 瓦猫（三联村）/ 手工抄纸（高黎贡博物馆）</li>
+      <li><b>芒市温泉</b>：芒市周边多个温泉（如 法帕温泉、遮放温泉），可泡半天放松</li>
+      <li><b>中缅边境一日游</b>：畹町桥、畹町边关文化园，从芒市自驾 1.5h；边境小镇氛围</li>
+      <li><b>傣族村寨体验</b>：三台山德昂族乡 / 勐戛镇傣族村，傣族干栏式建筑、织锦、银饰</li>
+      <li><b>傣族泼水节（如赶上）</b>：4 月才是节日，但泼水广场常驻可体验小规模泼水</li>
+      <li><b>热带水果采摘</b>：10 月是芒果 / 火龙果 / 菠萝蜜季节，农户可进园（需联系民宿老板介绍）</li>
+      <li><b>云南边境国门打卡</b>：畹町桥（中缅）/ 姐告国门（已加）/ 瑞丽国门（已加）</li>
+      <li><b>勐焕傣族古镇夜市</b>：除手抓饭外，还有傣族歌舞表演、泼水活动</li>
+      <li><b>边境漂流</b>：瑞丽 / 畹町一带的瑞丽江 / 怒江漂流（需找本地俱乐部）</li>
+      <li><b>中缅边境早市</b>：姐告边贸早市 8:00~10:00 热闹，可买缅甸小工艺品</li>
+    </ul>`},
+  {title:"🗺 边境小提醒", body:`
+    <ul>
+      <li><b>瑞丽在一寨两国 / 国门</b>等中缅边境（疫情后已恢复边境通行）</li>
+      <li>不要拍摄<b>军事 / 边境设施</b>，手机可能被检查</li>
+      <li>不替陌生人携带<b>任何物品</b>过关（基本常识）</li>
+      <li>边境附近不要打开地图的<b>实时位置</b>给陌生人看</li>
+    </ul>`},
+  {title:"📱 通讯 / 支付", body:`
+    <ul>
+      <li>中国移动 / 电信信号：芒市 / 瑞丽 / 腾冲市区都 4G/5G，山区可能 2G</li>
+      <li>微信支付 / 支付宝：基本到哪都通</li>
+      <li>现金：建议 1000 元备（一些小店 / 边境市场）</li>
+      <li>导航：<b>全程用高德</b>，点击本页任一地点自动唤起</li>
+    </ul>`},
+  {title:"⚠️ 风险注意", body:`
+    <ul>
+      <li>9.26 瑞丽 → 腾冲 4h 山路：务必满电、有司机驾驶经验交替</li>
+      <li>国庆高速可能比预期多 2~3h</li>
+      <li>山区雨季可能突发落石 / 塌方，看路段提示</li>
+      <li>退房时段（12:00 / 14:00）务必确认民宿退房时间；尤其腾冲家静是 14:00 前</li>
+    </ul>`},
+  {title:"🚨 紧急", body:`
+    <ul>
+      <li>报警 <b>110</b>　|　急救 <b>120</b>　|　高速救援 <b>12122</b></li>
+      <li>Model Y 救援：Tesla 客服 400-919-0707</li>
+      <li>云途救援（高速第三方）：95555</li>
+      <li>航班变化：东航客服 95530</li>
+    </ul>`},
+];
+function buildTips(){
+  const root = document.getElementById("tips");
+  root.innerHTML = TIPS.map(t => `<div class="tip"><h3>${t.title}</h3>${t.body}</div>`).join("");
+}
+
+/* ========== Countdown ========== */
+function findNextEvent(){
+  const now = getNowShanghai();
+  let next = null;
+  let nextTime = null;
+  for(const d of ITINERARY){
+    for(const e of d.events){
+      const dt = isoShanghai(d.date, e.time);
+      const diff = dt.getTime() - now.getTime();
+      if(diff > 0 && (!nextTime || dt < nextTime)){
+        nextTime = dt;
+        next = { ...e, dayLabel: d.dayLabel, dayDate: d.date, dayTitle: d.title };
+      }
+    }
+  }
+  if(!next) return null;
+  return { ...next, time: nextTime, now };
+}
+
+function updateCountdown(){
+  const ev = findNextEvent();
+  if(!ev){
+    document.getElementById("hero-event").innerHTML = "🎉 旅程已结束";
+    document.getElementById("hero-place").innerHTML = "";
+    return;
+  }
+  const p = diffParts(ev.time, ev.now);
+  document.getElementById("cd-d").textContent = p.d;
+  document.getElementById("cd-h").textContent = fmt2(p.h);
+  document.getElementById("cd-m").textContent = fmt2(p.m);
+  document.getElementById("cd-s").textContent = fmt2(p.s);
+
+  const whenDate = `${ev.dayDate.slice(5).replace('-','.')} · ${ev.time}`;
+  document.getElementById("hero-event").innerHTML = `${ev.ttl}`;
+  document.getElementById("hero-place").innerHTML = `📍 ${ev.dayLabel} · ${ev.dayTitle}`;
+  document.getElementById("hero-after").innerHTML = `${whenDate}（Asia/Shanghai） · 还有`;
+}
+
+/* ========== Day/Night theme ========== */
+function updateTheme(){
+  const now = new Date();
+  const fmt = new Intl.DateTimeFormat("en-CA",{timeZone:TZ,hour12:false,hour:"2-digit",minute:"2-digit"});
+  const parts = fmt.formatToParts(now);
+  let h = parts.find(p=>p.type==="hour").value;
+  let m = parts.find(p=>p.type==="minute").value;
+  if(h==="24") h="00";
+  const hour = parseInt(h) + parseInt(m)/60;
+  // 芒市日出约 6:40 日落约 19:10；9月底 10 月初
+  const sunrise = 6.5, sunset = 19.2;
+  const isDay = hour >= sunrise && hour < sunset;
+  document.body.classList.toggle("theme-night", !isDay);
+}
+
+/* ========== Init ========== */
+function init(){
+  buildFlights();
+  buildHotels();
+  buildTickets();
+  buildPrep();
+  buildItinerary();
+  initDayMaps();
+
+  buildTips();
+  document.getElementById("map-overview").innerHTML = buildOverviewSVG();
+  document.getElementById("legend").innerHTML = buildLegend();
+  updateCountdown();
+  updateTheme();
+  setInterval(updateCountdown, 1000);
+  setInterval(updateTheme, 60000);
+
+  // 默认所有 day 全部展开；这里确保「今天 ±2 天内」落到的 day 一定可见（不会因 toggle 翻转而消失）
+  const now = getNowShanghai();
+  for(const d of ITINERARY){
+    const dt = isoShanghai(d.date, "00:00");
+    const diff = Math.abs(dt.getTime() - now.getTime());
+    if(diff < 2 * 86400000){
+      const el = document.getElementById("route-"+d.id);
+      const tg = document.getElementById("tg-"+d.id);
+      if(el && !el.classList.contains("open")){
+        el.classList.add("open");
+        if(tg) tg.textContent = "收起 ▴";
+      }
+    }
+  }
+}
+
+if(document.readyState === "loading"){
+  document.addEventListener("DOMContentLoaded", init);
+} else {
+  init();
+}
+</script>
+</body>
+</html>
