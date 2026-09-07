@@ -1,0 +1,12 @@
+{
+  // 滇西十二日自驾指南 — Cloudflare Workers/Pages 静态发布配置
+  // 作用：明确告诉 wrangler deploy：把项目根目录当作静态站点发布，
+  //       入口是 index.html，任何路径都回退到 index.html。
+  //       之前缺这个文件，Cloudflare 部署了"空壳"，导致 无法访问(ERR_CONNECTION_CLOSED)。
+  "name": "mangshi",
+  "compatibility_date": "2025-07-01",
+  "assets": {
+    "directory": ".",
+    "not_found_handling": "single-page-application"
+  }
+}
